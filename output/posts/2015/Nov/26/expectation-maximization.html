@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <!-- Metadata -->
+	<meta charset="utf-8">
+
+    <!-- Title -->
+	<title>Benjamin R. Bray</title>
+
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Droid+Sans|Droid+Sans+Mono|Droid+Serif" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,400i,700" rel="stylesheet">
+	<!-- Site Styles -->
+	<link rel="stylesheet" href="/theme/css/style.css" type="text/css">
+	<link rel="stylesheet" href="/theme/css/pygments.css" type="text/css">
+	<!-- KaTeX -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"
+		onload='renderMathInElement(document.body, {
+			delimiters : [
+			{left: "$$", right: "$$", display: true},
+			{left: "\\(", right: "\\)", display: false},
+			{left: "$", right: "$", display: false},
+			],
+			macros : {
+				"\\X" : "\\mathcal{X}",
+				"\\L" : "\\mathcal{L}",
+				"\\R" : "\\mathbb{R}",
+			}
+		});'></script>
+
+<script>
+window.onload = function(){
+	buildTableOfContents(document.getElementById("toc"));
+}
+
+var headings = [];
+
+// BUG:  Doesn't work if there isn't at least one <h1>
+// BUG:  Doesn't generate toc item for last heading in page
+function buildTableOfContents(tocElement){
+	// get document headings
+	var pageContent = document.getElementById("post-body");
+	var headingTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+	var headings = getElementsByTagNames(pageContent, headingTags);
+	var headingData = [];
+	
+	// process headings
+	for(var k = 0; k < headings.length; k++){
+		// get heading data
+		var elem = headings[k];
+		var title = elem.innerText;
+		var id =  (k+1) + "-" + title.toLowerCase().replace(/\W+/g, "-");
+		var depth = parseInt(elem.tagName.substr(1));
+		
+		headingData.push({
+			url: "#" + id,
+			title: title,
+			depth: depth
+		})
+		
+		// set heading ids
+		elem.id = id;
+	};
+
+	console.log(headingData);
+
+	// build table of contents
+	var toc = document.createElement("ol");
+	tocElement.innerHTML = "";
+	tocElement.appendChild(toc);
+
+	// queue of <ol> elements (length represents current depth)
+	var queue = [toc];
+
+	for(var k = 0; k < headingData.length; k++){
+		let heading = headingData[k];
+		
+		// pop the queue as needed
+		while(heading.depth < queue.length){
+			let last = queue.pop();
+			queue[queue.length-1].appendChild(last);
+		}
+
+		// create new <ol> as needed
+		while(heading.depth > queue.length){
+			let nested = document.createElement("ol");
+			queue.push(nested);
+		}
+
+		// add <li> for this heading
+		let listItem = document.createElement("li");
+		let linkElem = document.createElement("a");
+		linkElem.textContent = heading.title;
+		linkElem.setAttribute("href", heading.url);
+		listItem.appendChild(linkElem);
+		queue[queue.length-1].appendChild(listItem);
+	}
+
+	// when finished, should have queue == [tocElement]
+	tocElement.style.opacity = 1;
+	tocElement.style.height = toc.clientHeight + "px";
+}
+
+/* GETELEMENTSBYTAGNAMES
+ * Returns all children of `parentElement` with any of the provided tags, in
+ * document order.
+ */
+function getElementsByTagNames(parentElement, tagNames){
+	// get all tags
+	var elements = [];
+	tagNames.forEach(function(tag){
+		var result = parentElement.getElementsByTagName(tag);
+		elements = elements.concat([].slice.call(result));
+	});
+	
+	// sort elements in document order
+	return elements.sort(documentOrderComparator);
+}
+
+/* DOCUMENTORDERCOMPARATOR
+ * Returns +1 if `a` follows `b`, -1 if `a` precedes `b`, or 0 otherwise.
+ */
+function documentOrderComparator(a, b){
+	// identity check
+	if(a == b) return 0;
+	// compare positions
+	var position = a.compareDocumentPosition(b);
+	if(position & 20) return -1;
+	if(position & 10) return 1;
+	return 0;
+}
+</script>
+</head>
+
+<body>
+
+<!-- CONTENT ------------------------------------------------------------------>
+
+<!-- HEADER -->
+<div id="header-box">
+	<div id="header">
+	<a id="header-name" href="/">
+		Benjamin R. Bray
+	</a><ul id="header-nav">
+		<li><a href="/blog.html">WRITING</a></li>
+		<li><a href="/projects.html">PROJECTS</a></li>
+		<li><a href="/resources.html">RESOURCES</a></li>
+		<li><a href="/resume.pdf">RESUME</a></li>
+	</ul>
+	</div>
+</div>
+
+<div id="page">
+	
+	<!-- CONTENT -->
+	<div id="content">
+<div class="center">
+
+<!-- Post Header -->
+<div class="article-header">
+	<div class="article-title">Expectation Maximization</div>
+	<div class="article-info">
+		Posted in Machine Learning on November 26, 2015
+	</div>
+</div>
+
+<!-- Table of Contents (Requires JavaScript) -->
+<div id="toc"></div>
+
+<!-- Post Context -->
+<div class="article-content">
+	<div id="post-body">
+	<style>
+.post-framed {
+    border: 1px solid black;
+    padding: 20px;
+}
+
+.post-framed h3:nth-child(1) {
+    margin-top: 0;
+}
+
+.post-remark {
+    background-color: #eee;
+}
+</style>
+
+<h1>Introduction</h1>
+<p>These notes provide a theoretical treatment of <strong>Expectation Maximization</strong>, an iterative parameter estimation algorithm used to find local maxima of the likelihood function in the presence of hidden variables.  Introductory textbooks [murphy:mlapp, bishop:prml] typically state the algorithm without explanation and expect students to work blindly through derivations.  We find this approach to be unsatisfying, and instead choose to tackle the theory head-on, followed by plenty of examples.  Following [neal1998:em], we view expectation-maximization as coordinate ascent on the <strong>Evidence Lower Bound</strong>.  This perspective takes much of the mystery out of the algorithm and allows us to easily derive variants like <strong>Hard EM</strong> and <strong>Variational EM</strong>.</p>
+<h1>Problem Setting</h1>
+<p>Suppose we observe data <span class="math">\(\X\)</span> generated from a model <span class="math">\(p\)</span> with true parameters <span class="math">\(\theta^*\)</span> in the presence of hidden variables <span class="math">\(Z\)</span>.  As usual, we wish to compute the maximum likelihood estimate
+    </p>
+<div class="math">$$
+    \hat\theta_{ML}
+    = \arg\max_\theta \ell(\theta|\X)
+    = \arg\max_\theta \log p(\X | \theta)
+    $$</div>
+<p>of the parameters given our observed data.  In some cases, we also seek to <em>infer</em> the values <span class="math">\(\mathcal{Z}\)</span> of the hidden variables <span class="math">\(Z\)</span>.  In the Bayesian spirit, we will treat the parameter <span class="math">\(\theta^*\)</span> as a realization of some random variable <span class="math">\(\Theta\)</span>.</p>
+<p>The observed data log-likelihood <span class="math">\(\ell(\theta|\X) = \log p(\X | \theta)\)</span> of the parameters given the observed data is useful for both inference and parameter estimation, in which we must grapple with uncertainty about the hidden variables.  Working directly with this quantity is often difficult in latent variable models because the inner sum cannot be brought out of the logarithm when we marginalize over the latent variables:
+    </p>
+<div class="math">$$
+    \ell(\theta|\X)
+    = \log p(\X | \theta)
+    = \log \sum_z p(\X, z | \theta)
+    $$</div>
+<p>
+In general, this likelihood is non-convex with many local maxima.  In contrast, [murphy:mlapp] shows that when <span class="math">\(p(x_n, z_n | \theta)\)</span> are exponential family distributions, the likelihood is convex, so learning is much easier.  Expectation maximization exploits the fact that learning is easy when we observe all variables.  We will alternate between inferring the values of the latent variables and re-estimating the parameters, assuming we have complete data.</p>
+<h1>Evidence Lower Bound</h1>
+<p>Our general approach will be to reason about the hidden variables through a proxy distribution <span class="math">\(q\)</span>, which we use to compute a lower-bound on the log-likelihood.  This section is devoted to deriving one such bound, called the <strong>Evidence Lower Bound (ELBO)</strong>.</p>
+<p>We can expand the data log-likelihood by marginalizing over the hidden variables:
+    </p>
+<div class="math">$$
+    \ell(\theta|\X)
+    = \log p(\X|\theta)
+    = \log \sum_z p(\X, z | \theta)
+    $$</div>
+<p>Through Jensen's inequality, we obtain the following bound, valid for any <span class="math">\(q\)</span>:
+    </p>
+<div class="math">$$\begin{aligned}
+    \ell(\theta|\X)
+    &amp;=    \log \sum_z p(\X, z | \theta) \\
+    &amp;=    \log \sum_z q(z) \frac{p(\X, z | \theta)}{q(z)} \\
+    &amp;\geq \sum_z q(z) \log \frac{p(\X, z | \theta)}{q(z)}
+    \equiv \mathcal{L}(q,\theta)
+    \end{aligned}$$</div>
+<p>The lower bound <span class="math">\(\mathcal{L}(q,\theta)\)</span> can be rewritten as follows:
+    </p>
+<div class="math">$$\begin{aligned}
+    \ell(\theta|\X)
+    \geq \mathcal{L}(q,\theta)
+    &amp;= \sum_z q(z) \log \frac{p(\X, z | \theta)}{q(z)} \\
+    &amp;= \sum_z q(z) \log p(\X, z | \theta)
+      -\sum_z q(z) \log q(z) \\
+    &amp;= E_q[ \log p(\X, Z | \theta)]
+      -E_q[ \log q(z) ] \\
+    &amp;= E_q[ \log p(\X, Z | \theta)]
+      + H(q)
+    \end{aligned}$$</div>
+<h2>Relationship to Relative Entropy</h2>
+<p>The first term in the last line above closely resembles the cross entropy between <span class="math">\(q(Z)\)</span> and the joint distribution <span class="math">\(p(X, Z)\)</span> of the observed and hidden variables.  However, the variables <span class="math">\(X\)</span> are fixed to our observations <span class="math">\(X=\X\)</span> and so <span class="math">\(p(\X,Z)\)</span> is an <em>unnormalized</em> [ref]In this case, <span class="math">\(\int p(\X, z)\, dz \neq 1\)</span>.[/ref] distribution over <span class="math">\(Z\)</span>.  It is easy to see that this does not set us back too far; in fact, the lower bound <span class="math">\(\mathcal{L}(q,\theta)\)</span> differs from a Kullback-Liebler divergence only by a constant with respect to <span class="math">\(Z\)</span>:
+    </p>
+<div class="math">$$\begin{aligned}
+    D_{KL}(q || p(Z|\X,\theta))
+    &amp;= H(q, p(Z|\X,\theta)) - H(q) \\
+    &amp;= E_q[ -\log p(Z|\X,\theta) ] - H(q) \\
+    &amp;= E_q[ -\log p(\X,Z | \theta) ] - E_q[ -\log p(\X|\theta) ] - H(q) \\
+    &amp;= E_q[ -\log p(\X,Z | \theta) ] + \log p(\X|\theta) - H(q) \\
+    &amp;= -\mathcal{L}(q,\theta) + \mathrm{const.}
+    \end{aligned}$$</div>
+<p>This yields a second proof of the evidence lower bound, following from the nonnegativity of relative entropy.  In fact, this is the proof given in [tzikas2008:variational] and [murphy:mlapp].
+    </p>
+<div class="math">$$
+    \log p(\X | \theta)
+    = D_{KL}(q || p(Z|\X, \theta)) + \mathcal{L}(q,\theta)
+    \geq \mathcal{L}(q,\theta)
+    $$</div>
+<h2>Selecting a Proxy Distribution</h2>
+<p>The quality of our lower bound <span class="math">\(\mathcal{L}(q,\theta)\)</span> depends heavily on the choice of proxy distribution <span class="math">\(q(Z)\)</span>.  We now show that the evidence lower bound is <em>tight</em> in the sense that equality holds when the proxy distribution <span class="math">\(q(Z)\)</span> is chosen to be the hidden posterior <span class="math">\(p(Z|\X,\theta)\)</span>.  This will be useful later for proving that the Expectation Maximization algorithm converges.</p>
+<div class="post-remark">
+Maximizing $\mathcal{L}(q,\theta)$ with respect to $q$ is equivalent to minimizing the relative entropy between $q$ and the hidden posterior $p(Z|\X,\theta)$.  Hence, the optimal choice for $q$ is exactly the hidden posterior, for which $D_{KL}(q || p(Z|\X,\theta)) = 0$, and
+    $$
+    \log p(\X | \theta) = E_q[ \log p(\X,Z | \theta) ] + H(q) = \mathcal{L}(q,\theta)
+    $$
+</div>
+
+<p>In cases where the hidden posterior is intractable to compute, we choo</p>
+<h1>Expectation Maximization</h1>
+<p>Recall that the maximum likelihood estimate of the parameters <span class="math">\(\theta\)</span> given observed data <span class="math">\(\X\)</span> in the presence of hidden variables <span class="math">\(Z\)</span> is
+    </p>
+<div class="math">$$
+    \hat\theta_{ML}
+    = \arg\max_\theta \ell(\theta|\X)
+    = \arg\max_\theta \log p(\X | \theta)
+    $$</div>
+<p>Unfortunately, when reasoning about hidden variables, finding a global maximum is difficult.  Instead, the <strong>Expectation Maximization</strong> algorithm is an iterative procedure for computing a local maximum of the likelihood function, under the assumption that the hidden posterior <span class="math">\(p(Z|\X,\theta)\)</span> is tractable.  We will take advantage of the evidence lower bound
+    </p>
+<div class="math">$$
+    \ell(\theta|\X) \geq \mathcal{L}(q,\theta)
+    $$</div>
+<p>on the data likelihood.  Consider only proxy distributions of the form <span class="math">\(q_\vartheta(Z) = p(Z|\X,\vartheta)\)</span>, where <span class="math">\(\vartheta\)</span> is some fixed configuration of the variables <span class="math">\(\Theta\)</span>, possibly different from our estimate <span class="math">\(\theta\)</span>.  The optimal value for <span class="math">\(\vartheta\)</span>, in the sense that <span class="math">\(\mathcal{L}(q_\vartheta, \theta)\)</span> is maximum, depends on the particular choice of <span class="math">\(\theta\)</span>.  Similarly, the optimal value for <span class="math">\(\theta\)</span> depends on the choice of <span class="math">\(\vartheta\)</span>.  This suggests an iterative scheme in which we alternate between maximizing with respect to <span class="math">\(\vartheta\)</span> and with respect to <span class="math">\(\theta\)</span>, gradually improving the log-likelihood.</p>
+<h2>Iterative Procedure</h2>
+<p>Suppose at time <span class="math">\(t\)</span> we have an estimate <span class="math">\(\theta_t\)</span> of the parameters.  To improve our estimate, we perform two steps of coordinate ascent on <span class="math">\(\L(\vartheta, \theta) \equiv \L(q_\vartheta, \theta)\)</span>, as described in [neal1998:em],</p>
+<div class="post-framed">
+    <h3>E-Step</h3>
+    Compute a new lower bound on the observed log-likelihood, with
+        $$
+        \vartheta_{t+1}
+        = \arg\max_\vartheta \mathcal{L}(\vartheta, \theta_t)
+        = \theta_t
+        $$
+
+    <h3>M-Step</h3>
+    Estimate new parameters by optimizing over the lower bound,
+    $$
+    \theta_{t+1}
+    = \arg\max_\theta \mathcal{L}(\vartheta_{t+1}, \theta)
+    = \arg\max_\theta E_q[ \log p(\X,Z|\theta) ]
+    $$
+</div>
+
+<p>In the M-Step, the expectation is taken with respect to <span class="math">\(q_{\vartheta_{t+1}}\)</span>.</p>
+<h3>Alternate Formulation</h3>
+<p>In the M-Step, the entropy term of the evidence lower bound <span class="math">\(\mathcal{L}(\vartheta_{t+1}, \theta)\)</span> does not depend on <span class="math">\(\theta\)</span>.  The remaining term <span class="math">\(Q(\theta_t, \theta)=E_q[\log p(\X,Z|\theta)]\)</span> is sometimes called the <strong>auxiliary function</strong> or <strong>Q-function</strong>.  To us, this is the <strong>expected complete-data log-likelihood</strong>.</p>
+<h2>Proof of Convergence</h2>
+<p>To prove convergence of this algorithm, we show that the data likelihood <span class="math">\(\ell(\theta|\X)\)</span> increases after each update.</p>
+<!-- Theorem:  Data likelihood increases with each update -->
+
+<div class="theorem">
+<span class="label">Theorem.</span> After a single iteration of Expectation Maximization, the observed data likelihood of the estimated parameters has not decreased, that is,
+    $$
+    \ell(\theta_t | \X) \leq \ell(\theta_{t+1} | \X)
+    $$
+</div>
+
+<p>This result is a simple consequence of all the hard work we have put in so far:</p>
+<div class="math">$$\begin{aligned}
+\ell(\theta_t | \X)
+&amp;= \mathcal{L}(q_{\vartheta_{t+1}}, \theta_t)           
+    &amp; \text{(tightness)} \\
+&amp;\leq \mathcal{L}(q_{\vartheta_{t+1}}, \theta_{t+1})  
+    &amp; \text{(M-Step)} \\
+&amp;\leq \ell(\theta_{t+1} | \X)                         
+    &amp; \text{(ELBO)}
+\end{aligned}$$</div>
+<p>It is also possible to show that Expectation-Maximization converges to something <em>useful</em>.  </p>
+<!-- Theorem: Local Maximum of ELBO is Local Maximum of Likelihood -->
+
+<div class="theorem">
+<span class="label">Theorem.</span> (Neal \& Hinton 1998, Thm. 2) Every local maximum of the evidence lower bound $\mathcal{L}(q, \theta)$ is a local maximum of the data likelihood $\ell(\theta | \X)$.
+</div>
+
+<p>Starting from an initial guess <span class="math">\(\theta_0\)</span>, We run this procedure until some stopping criterion is met and obtain a sequence <span class="math">\(\{ (\vartheta_t, \theta_t) \}_{t=1}^T\)</span> of parameter estimates.</p>
+<h1>Example: Coin Flips</h1>
+<p>Now that we have a good grasp on the theory behind Expectation Maximization, let's get some intuition by means of a simple example.  As usual, the simplest possible example involves coin flips!</p>
+<h2>Probabilistic Model</h2>
+<p>Suppose we have two coins, each with a different probability of heads, <span class="math">\(\theta_A\)</span> and <span class="math">\(\theta_B\)</span>, unknown to us.  We collect data from a series of <span class="math">\(N\)</span> trials in order to estimate the bias of each coin.  Each trial <span class="math">\(k\)</span> consists of flipping the same random coin <span class="math">\(Z_k\)</span> a total of <span class="math">\(M\)</span> times and recording only the total number <span class="math">\(X_k\)</span> of heads.  </p>
+<p>This situation is best described by the following <strong>generative probabilistic model</strong>, which precisely describes our assumptions about how the data was generated.  The corresponding graphical model and a set of sample data are shown in Figure \ref{fig:coinflip-pgm-data}.\
+    </p>
+<div class="math">$$
+    \begin{aligned}
+    \theta &amp;= (\theta_A, \theta_B)  &amp;                       
+        &amp;&amp;\text{fixed coin biases} \\
+    Z_n &amp;\sim \mathrm{Uniform}\{A, B\}    &amp; \forall\, n=1,\dots,N
+        &amp;&amp;\text{coin indicators} \\
+    X_n | Z_n, \theta &amp;\sim \mathrm{Bin}[\theta_{Z_n}, M] &amp; \forall\, n=1,\dots,N
+        &amp;&amp;\text{head count}
+    \end{aligned}
+    $$</div>
+<h2>Complete Data Log-Likelihood</h2>
+<p>The complete data log-likelihood for a single trial <span class="math">\((x_n, z_n)\)</span> is
+    </p>
+<div class="math">$$
+    \log p(x_n, z_n | \theta) = \log p(z_n) + \log p(x_n | z_n, \theta)
+    $$</div>
+<p>
+In this model, <span class="math">\(P(z_n) = \frac{1}{2}\)</span> is uniform.  The remaining term is
+    </p>
+<div class="math">$$\begin{aligned}
+    \log p(x_n | z_n, \theta)
+    &amp;= \log \binom{M}{x_n} \theta_{z_n}^{x_n} (1-\theta_{z_n})^{M-x_n} \\
+    &amp;= \log \binom{M}{x_n} + x_n \log\theta_{z_n} + (M-x_n)\log(1-\theta_{z_n})
+    \end{aligned}$$</div>
+<h2>Expectation Maximization</h2>
+<p>Now that we have specified the probabilistic model and worked out all relevant probabilities, we are ready to derive an Expectation Maximization algorithm.</p>
+<p>The <strong>E-Step</strong> is straightforward.  The <strong>M-Step</strong> computes a new parameter estimate <span class="math">\(\theta_{t+1}\)</span> by optimizing over the lower bound found in the E-Step.  Let <span class="math">\(\vartheta = \vartheta_{t+1} = \theta_t\)</span>.  Then,
+    </p>
+<div class="math">$$\begin{aligned}
+    \theta_{t+1}
+    = \arg\max_\theta \L(\theta, q_\vartheta)
+    &amp;= \arg\max_\theta E_q[\log p(\X, Z | \theta )]                  \\
+    &amp;= \arg\max_\theta E_q[\log p(\X | Z, \theta) p(Z)]              \\
+    &amp;= \arg\max_\theta E_q[\log p(\X | Z, \theta)] + \log p(Z)        \\
+    &amp;= \arg\max_\theta E_q[\log p(\X | Z, \theta)]
+    \end{aligned}$$</div>
+<p>Now, because each trial is conditionally independent of the others, given the parameters,
+    </p>
+<div class="math">$$\begin{aligned}
+    E_q[\log p(\X | Z, \theta)]                      
+    &amp;= E_q\left[ \log \prod_{n=1}^N p(x_n | Z_n, \theta) \right]     
+     = \sum_{n=1}^N E_q[\log p(x_n | Z_n , \theta)]
+    \\
+    &amp;= \sum_{n=1}^N E_q \bigg[
+            x_n \log \theta_{z_n} + (M-x_n) \log (1-\theta_{z_n})
+        \bigg] + \sum_{n=1}^N \log \binom{M}{x_n}
+    \\
+    &amp;= \sum_{n=1}^N E_q \bigg[
+            x_n \log \theta_{z_n} + (M-x_n) \log (1-\theta_{z_n})
+        \bigg] + \text{const. w.r.t. } \theta
+    \\
+    &amp;= \sum_{n=1}^N q_\vartheta(z_n=A)
+        \bigg[ x_n \log \theta_A + (M-x_n) \log \theta_A \bigg] \\
+    &amp;+ \sum_{n=1}^N q_\vartheta(z_n=B)
+        \bigg[ x_n \log \theta_B + (M-x_n) \log \theta_B \bigg]
+     + \text{const. w.r.t. } \theta
+    \end{aligned}$$</div>
+<p>Let <span class="math">\(a_k = q(z_k = A)\)</span> and <span class="math">\(b_k = q(z_k = B)\)</span>.  Note <span class="math">\(\sum_{k=1}^N a_k = \sum_{k=1}^N b_k = 1\)</span>.  To maximize the above expression with respect to the parameters, we take derivatives with respect to <span class="math">\(\theta_A\)</span> and <span class="math">\(\theta_B\)</span> and set to zero:
+    </p>
+<div class="math">$$\begin{aligned}
+    \frac{\partial}{\partial \theta_A} \bigg[ E_q[\log p(\X | Z, \theta)] \bigg]
+    &amp;= \frac{1}{\theta_A} \sum_{n=1}^N a_n x_n
+     + \frac{1}{1-\theta_A} \sum_{n=1}^N a_n (M-x_n) = 0 \\
+    %
+    \frac{\partial}{\partial \theta_B} \bigg[ E_q[\log p(\X | Z, \theta)] \bigg]
+    &amp;= \frac{1}{\theta_B} \sum_{n=1}^N b_n x_n
+     + \frac{1}{1-\theta_B} \sum_{n=1}^N b_n (M-x_n) = 0 \\
+    \end{aligned}$$</div>
+<p>Solving for <span class="math">\(\theta_A\)</span> and <span class="math">\(\theta_B\)</span>, we obtain
+    </p>
+<div class="math">$$
+    \theta_A = \frac{\sum_{n=1}^N a_n x_n}{\sum_{n=1}^N a_n M}
+    \qquad
+    \theta_B = \frac{\sum_{n=1}^N b_n x_n}{\sum_{n=1}^N b_n M}
+    $$</div>
+<h1>Example:  Gaussian Mixture Model</h1>
+<h2>Probabilistic Model</h2>
+<p>In a Gaussian Mixture Model, samples are drawn from a random <em>cluster</em>, each normally distributed with its own mean and variance.  Our goal will be to estimate the following parameters:
+    </p>
+<div class="math">$$
+    \begin{aligned}
+    \vec\pi &amp;= (\pi_1, \dots, \pi_K) &amp;&amp; \text{mixing weights} \\
+    \vec\mu &amp;= (\mu_1, \dots, \mu_K) &amp;&amp; \text{cluster centers} \\
+    \vec\Sigma &amp;= (\Sigma_1, \dots, \Sigma_K) &amp;&amp; \text{cluster variance}
+    \end{aligned}
+    $$</div>
+<p>
+The full model specification is below.  A graphical model is shown in Figure \ref{fig:gmm-pgm}.
+    </p>
+<div class="math">$$
+    \begin{aligned}
+    \theta &amp;= (\vec\pi, \vec\mu, \vec\Sigma) &amp;&amp; \text{model parameters} \\
+    z_n &amp;\sim \mathrm{Cat}[\pi]  &amp;&amp; \text{cluster indicators} \\
+    x_n | z_n, \theta &amp;\sim \mathcal{N}(\mu_{z_n}, \Sigma_{z_n}) &amp;&amp; \text{base distribution}
+    \end{aligned}
+    $$</div>
+<h3>Complete Data Log-Likelihood</h3>
+<p>The complete data log-likelihood for a single datapoint <span class="math">\((x_n, z_n)\)</span> is
+    </p>
+<div class="math">$$\begin{aligned}
+    \log p(x_n, z_n | \theta)
+    &amp;= \log \prod_{k=1}^K \pi_k \mathcal{N}(x_n \mid \mu_k, \Sigma_k)^{\mathbb{I}(z_n = k)} \\
+    &amp;= \sum_{k=1}^K \mathbb{I}(z_n = k) \log \pi_k \mathcal{N}(x_n \mid \mu_k, \Sigma_k)
+    \end{aligned}$$</div>
+<p>
+Similarly, the complete data log-likelihood over all points <span class="math">\(\{ (x_n, z_n) \}_{n=1}^N\)</span> is
+    </p>
+<div class="math">$$
+    \log p(X,Z | \theta)
+    = \sum_{n=1}^N \log p(x_n, z_n | \theta)
+    = \sum_{n=1}^N \sum_{k=1}^K \mathbb{I}(z_n = k) \log \pi_k \mathcal{N}(x_n \mid \mu_k, \Sigma_k)
+    $$</div>
+<h3>Hidden Posterior</h3>
+<p>The hidden posterior for a single point <span class="math">\((x_n, z_n)\)</span> can be found using Bayes' rule:
+    </p>
+<div class="math">$$\begin{aligned}
+    p(z_n = k | x_n, \theta)
+    &amp;= \frac{P(z_n=k | \theta) p(x_n | z_n=k, \theta)}{p(x_N | \theta)} \\
+    &amp;= \frac{\pi_k \mathcal{N}(x_n | \mu_k, \Sigma_k)}{\sum_{k'=1}^K \pi_{k'} \mathcal{N}(x_n | \mu_{k'}, \Sigma_{k'})}
+    \end{aligned}$$</div>
+<h2>Expectation Maximization</h2>
+<p>Our derivation will follow that of [murphy:mlapp], adapted to our notation.</p>
+<h3>E-Step</h3>
+<p>Before the E-step, we have an estimate <span class="math">\(\theta_t\)</span> of the parameters, and seek to compute a new lower bound on the observed log-likelihood.  Earlier, we showed that the optimal lower bound is
+    </p>
+<div class="math">$$
+    \L(q_{\theta_t}, \theta) = E_q[ \log p(\X,Z|\theta)] + \text{const.}
+    $$</div>
+<p>
+where <span class="math">\(q_{\theta_t}(z) \equiv p(z|\X,\theta_t)\)</span> and the second term is constant with respect to <span class="math">\(\theta\)</span>.  The E-Step requires us to derive an expression for the first term.  Using \autoref{gmm:complete-log-likelihood}, the expected complete data log-likelihood is given by
+    </p>
+<div class="math">$$\begin{aligned}
+    Q(\theta_t, \theta) = E_q[ \log p(\X,Z|\theta)]
+    &amp;= \sum_{n=1}^N \sum_{k=1}^K
+            E_q\big[ \mathbb{I}(z_n = k) \log \pi_k \mathcal{N}(x_n \mid \mu_k, \Sigma_k) \big] \\
+    &amp;= \sum_{n=1}^N \sum_{k=1}^K
+            E_q\big[ \mathbb{I}(z_n = k) \big]
+            \log \pi_k \mathcal{N}(x_n \mid \mu_k, \Sigma_k) \\
+    &amp;= \sum_{n=1}^N \sum_{k=1}^K
+            p(z_n=k \mid x_n, \theta_t)
+            \log \pi_k \mathcal{N}(x_n \mid \mu_k, \Sigma_k) \\
+    &amp;= \sum_{n=1}^N \sum_{k=1}^K
+            r_{nk} \log \pi_k
+     + \sum_{n=1}^N \sum_{k=1}^K
+            r_{nk} \log \mathcal{N}(x_n \mid \mu_k, \Sigma_k)
+    \end{aligned}$$</div>
+<p>
+where <span class="math">\(r_{nk} \equiv p(z_n = k \mid x_n, \theta_t)\)</span> is the <strong>responsibility</strong> that cluster <span class="math">\(k\)</span> takes for data point <span class="math">\(x_n\)</span> after step <span class="math">\(t\)</span>.  During the E-Step, we compute these values explicitly with \autoref{gmm:hidden-posterior}.</p>
+<h3>M-Step</h3>
+<p>During the M-Step, we optimize our lower bound with respect to the parameters <span class="math">\(\theta = (\vec\pi, \vec\mu, \vec\Sigma)\)</span>.  For the mixing weights <span class="math">\(\vec\pi\)</span>, we use Lagrange multipliers to maximize the ELBO subject to the constraint <span class="math">\(\sum_{k=1}^K \pi_k = 1\)</span>.  The Lagrangian is
+    </p>
+<div class="math">$$
+    \Lambda(\pi, \lambda) = Q(\theta_t, \theta) + \lambda \left( \sum_{k=1}^K \pi_k - 1 \right)
+    $$</div>
+<p>
+Carrying out the optimization, we find that <span class="math">\(\lambda = -N\)</span>.  The correct update for the mixing weights is
+    </p>
+<div class="math">$$
+    \boxed{ \pi_k = \frac{1}{N} \sum_{n=1}^N r_{nk} = \frac{r_k}{N} }
+    $$</div>
+<p>
+where <span class="math">\(r_k \equiv \sum_{n=1}^n r_{nk}\)</span> is the <em>effective</em> number of points assigned to cluster <span class="math">\(k\)</span>.  For the cluster centers <span class="math">\(\vec\mu\)</span> and variance <span class="math">\(\vec\Sigma\)</span>, you should verify that the correct updates are
+    </p>
+<div class="math">$$
+    \boxed{ \mu_k = \frac{\sum_{n=1}^N r_{nk} x_n}{r_k} }
+    \qquad
+    \boxed{ \Sigma_k = \frac{\sum_{n=1}^N r_{nk} x_n x_n^T}{r_k} - \mu_k \mu_k^T }
+    $$</div>
+<h1>Advice for Deriving EM Algorithms</h1>
+<p>The previous two examples suggest a general approach for deriving a new algorithm.</p>
+<ul>
+<li><strong>Specify the probabilistic model.</strong>  Identify the observed variables, hidden variables, and parameters.  Draw the corresponding graphical model to help determine the underlying independence structure.</li>
+<li><strong>Identify the complete-data likelihood <span class="math">\(P(X,Z|\theta)\)</span>.</strong>  For exponential family models, the complete-data likelihood will be convex and easy to optimize.  In other models, other work may be required.</li>
+<li><strong>Identify the hidden posterior <span class="math">\(P(Z|X,\theta)\)</span>.</strong>  If this distribution is not tractable, you may want to consider variational inference, which we will discuss later.</li>
+<li><strong>Derive the E-Step.</strong>  Write down an expression for <span class="math">\(E_q[ \log p(\X | Z,\theta)]\)</span>.</li>
+<li><strong>Derive the M-Step.</strong>  Try taking derivatives and setting to zero.  If this doesn't work, you may need to resort to gradient-based methods or variational inference.</li>
+</ul>
+	</div>
+</div>
+
+<!-- Disqus ------------------------------------------------------------------->
+
+</div>
+	</div>
+
+	<!-- Page Footer -->
+	<div id="page-footer">
+		<span style="float: left">
+			Powered by <a href="http://blog.getpelican.com/">Pelican</a> and hosted on <a href="https://github.com/benrbray/benrbray.github.io-source">GitHub</a>.
+		</span>
+		<span style="float: right">
+			Last updated on October 16, 2019
+		</span>
+	</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+{% extends "structure/base.html" %}
+
+<!-- CONTENT ------------------------------------------------------------------>
+{% block content %}
+
+<div class="page">	
+	<!-- Post ----------------------------------------------------------------->
+	<div class="post">
+	    <!-- Post Header -->
+		<div class="article-header">
+			<div class="article-title">{{ page.title }}</div>
+			<div class="article-info">{{ page.date }}</div>
+		</div>
+		<!-- Post Content -->
+		<div class="article-content">
+			{{ page.content }}
+		</div>
+	</div>
+</div>
+
+{% endblock %}

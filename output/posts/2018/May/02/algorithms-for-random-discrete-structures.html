@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <!-- Metadata -->
+	<meta charset="utf-8">
+
+    <!-- Title -->
+	<title>Benjamin R. Bray</title>
+
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Droid+Sans|Droid+Sans+Mono|Droid+Serif" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,400i,700" rel="stylesheet">
+	<!-- Site Styles -->
+	<link rel="stylesheet" href="/theme/css/style.css" type="text/css">
+	<link rel="stylesheet" href="/theme/css/pygments.css" type="text/css">
+	<!-- KaTeX -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"
+		onload='renderMathInElement(document.body, {
+			delimiters : [
+			{left: "$$", right: "$$", display: true},
+			{left: "\\(", right: "\\)", display: false},
+			{left: "$", right: "$", display: false},
+			],
+			macros : {
+				"\\X" : "\\mathcal{X}",
+				"\\L" : "\\mathcal{L}",
+				"\\R" : "\\mathbb{R}",
+			}
+		});'></script>
+
+<script>
+window.onload = function(){
+	buildTableOfContents(document.getElementById("toc"));
+}
+
+var headings = [];
+
+// BUG:  Doesn't work if there isn't at least one <h1>
+// BUG:  Doesn't generate toc item for last heading in page
+function buildTableOfContents(tocElement){
+	// get document headings
+	var pageContent = document.getElementById("post-body");
+	var headingTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+	var headings = getElementsByTagNames(pageContent, headingTags);
+	var headingData = [];
+	
+	// process headings
+	for(var k = 0; k < headings.length; k++){
+		// get heading data
+		var elem = headings[k];
+		var title = elem.innerText;
+		var id =  (k+1) + "-" + title.toLowerCase().replace(/\W+/g, "-");
+		var depth = parseInt(elem.tagName.substr(1));
+		
+		headingData.push({
+			url: "#" + id,
+			title: title,
+			depth: depth
+		})
+		
+		// set heading ids
+		elem.id = id;
+	};
+
+	console.log(headingData);
+
+	// build table of contents
+	var toc = document.createElement("ol");
+	tocElement.innerHTML = "";
+	tocElement.appendChild(toc);
+
+	// queue of <ol> elements (length represents current depth)
+	var queue = [toc];
+
+	for(var k = 0; k < headingData.length; k++){
+		let heading = headingData[k];
+		
+		// pop the queue as needed
+		while(heading.depth < queue.length){
+			let last = queue.pop();
+			queue[queue.length-1].appendChild(last);
+		}
+
+		// create new <ol> as needed
+		while(heading.depth > queue.length){
+			let nested = document.createElement("ol");
+			queue.push(nested);
+		}
+
+		// add <li> for this heading
+		let listItem = document.createElement("li");
+		let linkElem = document.createElement("a");
+		linkElem.textContent = heading.title;
+		linkElem.setAttribute("href", heading.url);
+		listItem.appendChild(linkElem);
+		queue[queue.length-1].appendChild(listItem);
+	}
+
+	// when finished, should have queue == [tocElement]
+	tocElement.style.opacity = 1;
+	tocElement.style.height = toc.clientHeight + "px";
+}
+
+/* GETELEMENTSBYTAGNAMES
+ * Returns all children of `parentElement` with any of the provided tags, in
+ * document order.
+ */
+function getElementsByTagNames(parentElement, tagNames){
+	// get all tags
+	var elements = [];
+	tagNames.forEach(function(tag){
+		var result = parentElement.getElementsByTagName(tag);
+		elements = elements.concat([].slice.call(result));
+	});
+	
+	// sort elements in document order
+	return elements.sort(documentOrderComparator);
+}
+
+/* DOCUMENTORDERCOMPARATOR
+ * Returns +1 if `a` follows `b`, -1 if `a` precedes `b`, or 0 otherwise.
+ */
+function documentOrderComparator(a, b){
+	// identity check
+	if(a == b) return 0;
+	// compare positions
+	var position = a.compareDocumentPosition(b);
+	if(position & 20) return -1;
+	if(position & 10) return 1;
+	return 0;
+}
+</script>
+</head>
+
+<body>
+
+<!-- CONTENT ------------------------------------------------------------------>
+
+<!-- HEADER -->
+<div id="header-box">
+	<div id="header">
+	<a id="header-name" href="/">
+		Benjamin R. Bray
+	</a><ul id="header-nav">
+		<li><a href="/blog.html">WRITING</a></li>
+		<li><a href="/projects.html">PROJECTS</a></li>
+		<li><a href="/resources.html">RESOURCES</a></li>
+		<li><a href="/resume.pdf">RESUME</a></li>
+	</ul>
+	</div>
+</div>
+
+<div id="page">
+	
+	<!-- CONTENT -->
+	<div id="content">
+<div class="center">
+
+<!-- Post Header -->
+<div class="article-header">
+	<div class="article-title">Algorithms for Random Discrete Structures</div>
+	<div class="article-info">
+		Posted in Mathematics on May 02, 2018
+	</div>
+</div>
+
+<!-- Table of Contents (Requires JavaScript) -->
+<div id="toc"></div>
+
+<!-- Post Context -->
+<div class="article-content">
+	<div id="post-body">
+	<h1>Introduction</h1>
+<p>Randomness[ref]footnote[/ref] plays a critical role in computer science and applied mathematics.  In the sciences, randomness allows researchers to study average-case behavior of physical models which would otherwise be too complex or time-consuming to simulate exactly.  In computing, randomized algorithms have become essential tools for approximating NP-Hard problems.</p>
+<p>In this post, we will survey strategies for designing algorithms to randomly generate objects with nontrivial structure from a prescribed distribution.  For example, we may wish to choose elements uniformly at random from a group or generate a set of random unitary matrices whose behavior is somehow representative of the class of unitary matrices generally.  The samples are intended for use as input to a known model or algorithm.</p>
+<p>We must take care to distinguish between the three different types of random sampling that are commonly employed.  Genuine <em>uniformly random</em> samples are easiest to generate, due to independence, but individual realizations will naturally have regions of low and high density.  Our intuitive understanding of uniformity is more like <em>uniformly spaced</em> samples, where the goal is to maximize coverage and avoid redundancy.  In the extreme, we may want to sample <em>rare events</em> to study the worst-case behavior of a system.  These differences are shown informally in Figure \ref{fig:kinds-of-randomness}.</p>
+<p>It also helps to keep the reverse problem in mind:  how does a deterministic algorithm behave when fed random inputs?</p>
+<h1>Preliminaries</h1>
+<p>In this section, we briefly review the necessary mathematical background and introduce notation.</p>
+<p><strong>Unitary Matrices.</strong>  A matrix <span class="math">\(U \in \mathbb{C}^{n \times n}\)</span> with orthonormal columns is called <em>unitary</em>.  Equivalently, <span class="math">\(U U^* = I\)</span>, where <span class="math">\(U^*\)</span> denotes the conjugate transpose.  The eigenvalues of a unitary matrix have unit modulus, and accordingly <span class="math">\(|\det U| = 1\)</span>.  Real matrices <span class="math">\(M \in \mathbb{R}^{n \times n}\)</span> satisfying these conditions are called <em>orthogonal</em>.</p>
+<p><strong>Groups.</strong>  A group <span class="math">\((G,*)\)</span> consists of an associative operation <span class="math">\(* : G \times G \rightarrow G\)</span> over a set <span class="math">\(G\)</span> which contains a (unique) identity element <span class="math">\(1_G\)</span> and a (unique) inverse <span class="math">\(a^{-1}\)</span> for each element <span class="math">\(a \in G\)</span>, with <span class="math">\(a^{-1} a = a a^{-1} = 1_G\)</span>.  For convenience, we call <span class="math">\(a * b\)</span> multiplication and occasionally write <span class="math">\(ab\)</span> instead.  Additive notation <span class="math">\(a +b\)</span> is used for commutative groups.  A set <span class="math">\(S \subset G\)</span> is a <em>subgroup</em> if it is closed under multiplication and inverses with respect to the group operation. </p>
+<p>Familiar commutative groups are <span class="math">\((\mathbb{Z}, +)\)</span>, <span class="math">\((\mathbb{Q}, +)\)</span>, and <span class="math">\((\mathbb{R}_{\neq 0}, \cdot)\)</span>.  The invertible matrices over a field <span class="math">\(F\)</span> form a non-commutative group <span class="math">\(\mathrm{GL}_n(F)\)</span> with respect to matrix multiplication, known as the <em>general linear group</em>.  The orthogonal matrices <span class="math">\(\mathrm{O}_n(\mathbb{R})\)</span> and unitary matrices <span class="math">\(\mathrm{U}_n(\mathbb{C})\)</span> both form subgroups of <span class="math">\(\mathrm{GL}_n(\mathbb{C})\)</span>. The <em>special linear group</em> <span class="math">\(\mathrm{SL}_n(\mathbb{C})\)</span> is the set of matrices with determinant one.</p>
+<p>Groups of transformations are useful for understanding the <em>invariants</em> of an object.  The set of all permutations on <span class="math">\(n\)</span> elements forms the <em>symmetric group</em> <span class="math">\(S_n\)</span> with respect to function composition.  An important subgroup is the <em>alternating group</em> <span class="math">\(A_n\)</span> consisting of only even permutations.  For a full treatment of group theory, see (Pinter 2010).</p>
+<p><strong>Topological Groups.</strong> Of particular interest are groups whose underlying set possesses additional topological or geometric structure.  Studying transformations on such spaces, e.g. homotopy groups in algebraic topology, can reveal important invariant structure which does not readily present itself through other methods.  In this report, we favor intuition at the expense of rigor, so be warned that statements below may require slight modifications to be technically correct.</p>
+<p>A <em>Lie group</em> is a smooth manifold <span class="math">\(G\)</span> with group structure such that the multiplication and inverse maps are smooth. A <em>Haar measure</em> on a compact topological group <span class="math">\(G\)</span> is a Borel measure (defined on a <span class="math">\(\sigma\)</span>-algebra containing the open sets) which is invariant under the group operation, that is, <span class="math">\(\mu(gE) = \mu(E)\)</span> for any <span class="math">\(g \in G\)</span> and measurable <span class="math">\(E \subset G\)</span>.  We sometimes describe this as "translation" or "rotation" invariance depending on the context.  Every compact Lie group has a unique Haar measure <span class="math">\(\mu\)</span>, which can easily be normalized to a probability measure since <span class="math">\(\mu(G) &lt; +\infty\)</span>.  For a proof, see (Tao 2011).  The general linear group <span class="math">\(GL_n(\mathbb{C})\)</span> is not compact, but the groups <span class="math">\(\mathrm{O}_n(\mathbb{R})\)</span>, <span class="math">\(\mathrm{U}_n(\mathbb{C})\)</span>, and <span class="math">\(SL_n(\mathbb{C})\)</span> are compact.  For this reason, they are sometimes called the <em>classical compact groups</em>.  Our goal is to generate random samples from these groups according to the Haar measure, which can be thought of as a generalization of the uniform distribution.</p>
+<h1>Random Matrix Theory</h1>
+<p>A <em>matrix ensemble</em> is a family of matrices together with a probability distribution.  The most well-studied examples are:</p>
+<ul>
+<li><em>Gaussian Orthogonal Ensemble</em>, with i.i.d. real entries <span class="math">\(\mathcal{N}(0,1)\)</span></li>
+<li><em>Gaussian Unitary Ensemble</em>, with i.i.d. complex entries <span class="math">\(\mathcal{N}(0,1) + i \mathcal{N}(0,1)\)</span></li>
+<li><em>Gaussian Symplectic Ensemble</em>, with i.i.d. quaternion entries <span class="math">\(\mathcal{N} + i \mathcal{N} + j \mathcal{N} + k \mathcal{N}\)</span></li>
+</ul>
+<p>Note that these processes do not necessarily produce orthogonal or unitary matrices; the name comes from the orthogonal / unitary invariance of the corresponding probability measures, as in the following lemma:</p>
+<!-- Lemma -->
+
+<div class="theorem">
+<span class="label">Lemma.</span> (c.f. Mezzadri 2006)
+The measure $d\mu_G$ of the Gaussian Unitary Ensemble is invariant under left and right multiplication of $Z$ by arbitrary unitary matrices,
+    $$
+    d\mu_G(UZ) = d\mu_G(ZV) = d\mu_G(Z) \text{ for all } U,V \in \mathrm{U}_n(\mathbb{C})
+    $$
+</div>
+
+<h2>Eigenvalues and The Circular Law</h2>
+<p>The eigenvalues of a random matrix are themselves random, and it is natural to ask with what distribution.  One might suspect that the particular choice of distribution for the matrix entries would determine the asymptotic behavior; however, the <em>universality principle</em> (Tao 2010) states that the choice does not matter in the limit, effectively absolving us of our guilt for not choosing a more complicated distribution than the standard normal.  The eigenvalue distribution of matrices with independent Gaussian entries has long been known to obey the <em>circular law</em>, and universality immediately gives the following theorem.  A related <em>semicircular law</em> is known for random Hermitian matrices. </p>
+<!-- Theorem: Circular Law -->
+
+<div class="theorem">
+<span class="label">Theorem.</span> (Tao 2008) Let $x$ be a complex random variable of mean zero and unit variance.  Let $M_n \in \mathbb{C}^{n \times n}$ be a random matrix whose entries are i.i.d. copies of $x$.  In the limit $n \rightarrow \infty$, the empirical distribution of the eigenvalues of $\frac{1}{\sigma \sqrt{n}} M_n$ converges (both in probability almost surely) to the uniform distribution over the complex unit disk.
+</div>
+
+<p>The circular law is verified empirically in Figure \ref{fig:goe-gue-eigs} for the Gaussian ensembles.  For the real case on the right, there is an unexpected concentration of eigenvalues exactly on the real line, suggesting that the eigenvalue distribution is <em>not absolutely continuous</em> with respect to Lebesgue measure.  The joint eigenvalue density for the GOE was worked out explicitly by (Edelman 1997) and integrated, leading to the following computation:</p>
+<!-- Theorem:  Probability that GOE has real eigenvalues -->
+
+<div class="theorem">
+<span class="label">Theorem.</span> (Edelman 1997)
+Let $M \in \mathbb{R}^{n \times n}$ have independent standard normal entries.  The probability that $M$ has $k$ eigenvalues has the form $r + s\sqrt{2}$ for some rational $r,s \in \mathbb{Q}$.  In particular, the probability that a random matrix has all real eigenvalues is $1 / 2^{n(n-1)/4}$.
+</div>
+
+<h2>Random Structured Matrices</h2>
+<p>Some applications call for matrices with additional structure.  For example, it may be desirable to generate random diagonal, symmetric, orthogonal, or upper-triangular matrices.  One might think of several clever ways to accomplish this in Python:</p>
+<style>
+#clever-table {
+    border-spacing: 20px 0;
+}
+#clever-table td:nth-child(1) {
+    text-align: right;
+    margin-right: 10px;
+}
+#clever-table td:nth-child(2) {
+    font-family: monospace;
+    font-size: 14px;
+}
+</style>
+
+<table id="clever-table"style="margin: 0 auto;">
+    <colgroup>
+        <col style="width: 50%">
+        <col style="width: 50%">
+    </colgroup>
+    <tr><td>Real</td><td>A = randn(n,n)<td></tr>
+    <tr><td>Complex</td><td>B = randn(n,n) + 1j * randn(n,n)<td></tr>
+    <tr><td>Diagonal</td><td>D = diag(diag(A))<td></tr>
+    <tr><td>Symmetric</td><td>S = A + A.T<td></tr>
+    <tr><td>Orthogonal</td><td>Q,_ = qr(A)<td></tr>
+    <tr><td>Upper-triangular</td><td>_,R = qr(A)<td></tr>
+    <tr><td>Lower-triangular</td><td>L = chol(A)<td></tr>
+</table>
+
+<p>These methods certainly produce matrices of the desired type, but for serious applications it is important to understand the resulting distributions.  Furthermore, the general problem of understanding how deterministic algorithms (such as the <code>numpy</code>} implementation of QR factorization) is useful for algorithm design.  In the next section, we show that the naive method for generating random unitary matrices is biased and suggest a correction.</p>
+<h1>Random Unitary Matrices</h1>
+<p>Assume we wish to generate random unitary matrices according to the Haar measure on <span class="math">\(U_n(\mathbb{C})\)</span>.  The eigenvalues <span class="math">\(e^{i\theta}\)</span> of a unitary matrix have unit modulus, so we are effectively choosing random arguments <span style="white-space: pre;"><span class="math">\(\theta\)</span>,</span> which we would like to be uniform on the complex unit circle.  As shown in Figure \ref{fig:random-unitary-histogram}, the naive method <code>U,_ = qr(B)</code> applied to a random <code>B</code> with compex Gaussian entries fails to have a uniform eigenvalue distribution.</p>
+<p>As described by (Mezzadri 2006), this sampling bias arises from the fact that the QR factorization is not unique.  If <span class="math">\(Z \in \mathrm{GL}_n(\mathbb{C})\)</span> factorizes as <span class="math">\(Z = QR\)</span> and <span class="math">\(\Lambda = \mathrm{diag}(e^{i\theta_1}, \dots, e^{i\theta_n})\)</span> is any diagonal unitary matrix, then <span class="math">\(Z = (Q \Lambda) (\Lambda^{-1}R)\)</span> is also a valid QR factorization.  In effect, the QR factorization is a <em>multi-valued map</em>
+    </p>
+<div class="math">$$
+    \mathrm{QR} : \mathrm{GL}_n(\mathbb{C}) \rightarrow \mathrm{U}_n(\mathbb{C}) \times T_n(\mathbb{C})
+    $$</div>
+<p>
+where <span class="math">\(T_n(\mathbb{C})\)</span> is the group of invertible upper triangular matrices.  Different QR factorization algorithms choose different principal values, often in an inconsistent way, which is the source of our error.</p>
+<h2>The Corrected Algorithm</h2>
+<p>To ensure that the QR decomposition with random input produces a unitary matrix distributed according to the Haar measure, we must choose a variation of the map above which is not only single valued but also one-to-one.  We need the following lemma.  Let <span class="math">\(\Lambda_n(\mathbb{C})\)</span> denote the group of unitary diagonal matrices.</p>
+<!-- Lemma -->
+
+<div class="theorem">
+<span class="label">Lemma.</span>
+Let $Z \in \mathbb{C}^{n \times n}$ have two valid QR decompositions $Z = Q_1 R_1 = Q_2 R_2$.  Then, there is $\Lambda \in \Lambda_n(\mathbb{C})$ such that $Q_2 = Q_2 \Lambda^{-1}$ and $R_2 = \Lambda R_1$.
+</div>
+
+<p>Consider the quotient group <span class="math">\(\Gamma_n(\mathbb{C}) = T_n(\mathbb{C}) / \Lambda_n(\mathbb{C})\)</span>.  Our corrected algorithm will be a one-to-one map
+    </p>
+<div class="math">$$
+    \widehat{\mathrm{QR}} : \mathrm{GL}_n(\mathbb{C}) \rightarrow \mathrm{U}_n(\mathbb{C}) \times \Gamma_n(C)
+    $$</div>
+<p>
+The upper-rectangular matrix returned by the corrected algorithm will be a representative <span class="math">\(\gamma\)</span> of <span class="math">\(\Gamma_n(\mathbb{C})\)</span>.  If we choose the map <span class="math">\(\widehat{\mathrm{QR}}\)</span> to be unitarily invariant with respect to <span class="math">\(\gamma\)</span>, that is,
+    </p>
+<div class="math">$$
+    Z \mapsto (Q, \gamma) \implies UZ \mapsto (UQ, \gamma) \text{ for all } U \in \mathrm{U}_n(\mathbb{C})
+    $$</div>
+<p>
+then by Lemma \ref{lemma:gue-invariance}, the algorithm <span class="math">\(\widehat{\mathrm{QR}}\)</span> with input from a Gaussian Unitary Ensemble will be distributed according to the Haar measure on <span class="math">\(U_n(\mathbb{C})\)</span>.  It can be shown that the unitary invariance property holds when representatives for <span class="math">\(\Gamma_n(\mathbb{C})\)</span> are chosen from the set of upper triangular matrices with real, positive entries.  This suggests the following correction to the naive algorithm.  The results are shown on the right in Figure \ref{fig:random-unitary-histogram}.</p>
+<style>
+.highlight {
+    padding: 10px;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    margin: 10px 0;
+}
+
+.highlight pre {
+    margin: 0;
+    font-size: 12px;
+}
+</style>
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">haar_measure</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="c1"># naive method</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="n">Q</span><span class="p">,</span><span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">Z</span><span class="p">);</span>
+    <span class="c1"># correction</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">R</span><span class="p">);</span>
+    <span class="n">PH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">d</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">Q</span> <span class="o">@</span> <span class="n">PH</span><span class="p">;</span>
+</pre></div>
+
+
+<h1>Discussion</h1>
+<p>We have described several basic results in random matrix theory and developed an algorithm for sampling unitary matrices in a uniform way.  The corrected algorithm in the previous section is a special case of the remarkably general <em>subgroup algorithm</em> (Diaconis 1987), in which uniform random samples from a group <span class="math">\(G_n\)</span> are built up from successive uniform samples from a chain of subgroups <span class="math">\(G_1 \subset G_2 \subset \cdots G_n\)</span>.  The Fisher-Yates shuffle is a well-known realization of the subgroup algorithm.  The algorithm is very general, but the main difficulty is generating samples from the quotient groups <span class="math">\(G_{k} / G_{k-1}\)</span>.</p>
+<p>For our specific problem of generating random unitary matrices, we were able to prove that the corrected method produces a result distributed according to Haar measure.  When designing sampling procedures for more complicated structures, this may not be possible, and there has been some work on developing statistical tests on manifolds to determine whether the target distribution has been met (Sepheri 2016).</p>
+<p>I am aware that Lie groups are commonly used in motion planning; the valid orientations of a robot or vehicle form a manifold in configuration space, and there is a group of transformations which describe the allowed behavior.  I strongly suspect that the strategies used in this report could be used to randomly sample valid configurations, which could be useful in simulation or gaming applications.</p>
+	</div>
+</div>
+
+<!-- Disqus ------------------------------------------------------------------->
+
+</div>
+	</div>
+
+	<!-- Page Footer -->
+	<div id="page-footer">
+		<span style="float: left">
+			Powered by <a href="http://blog.getpelican.com/">Pelican</a> and hosted on <a href="https://github.com/benrbray/benrbray.github.io-source">GitHub</a>.
+		</span>
+		<span style="float: right">
+			Last updated on October 16, 2019
+		</span>
+	</div>
+</div>
+
+</body>
+</html>

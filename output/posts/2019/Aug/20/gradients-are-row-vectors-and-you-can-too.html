@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <!-- Metadata -->
+	<meta charset="utf-8">
+
+    <!-- Title -->
+	<title>Benjamin R. Bray</title>
+
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Droid+Sans|Droid+Sans+Mono|Droid+Serif" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,400i,700" rel="stylesheet">
+	<!-- Site Styles -->
+	<link rel="stylesheet" href="/theme/css/style.css" type="text/css">
+	<link rel="stylesheet" href="/theme/css/pygments.css" type="text/css">
+	<!-- KaTeX -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"
+		onload='renderMathInElement(document.body, {
+			delimiters : [
+			{left: "$$", right: "$$", display: true},
+			{left: "\\(", right: "\\)", display: false},
+			{left: "$", right: "$", display: false},
+			],
+			macros : {
+				"\\X" : "\\mathcal{X}",
+				"\\L" : "\\mathcal{L}",
+				"\\R" : "\\mathbb{R}",
+			}
+		});'></script>
+
+<script>
+window.onload = function(){
+	buildTableOfContents(document.getElementById("toc"));
+}
+
+var headings = [];
+
+// BUG:  Doesn't work if there isn't at least one <h1>
+// BUG:  Doesn't generate toc item for last heading in page
+function buildTableOfContents(tocElement){
+	// get document headings
+	var pageContent = document.getElementById("post-body");
+	var headingTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+	var headings = getElementsByTagNames(pageContent, headingTags);
+	var headingData = [];
+	
+	// process headings
+	for(var k = 0; k < headings.length; k++){
+		// get heading data
+		var elem = headings[k];
+		var title = elem.innerText;
+		var id =  (k+1) + "-" + title.toLowerCase().replace(/\W+/g, "-");
+		var depth = parseInt(elem.tagName.substr(1));
+		
+		headingData.push({
+			url: "#" + id,
+			title: title,
+			depth: depth
+		})
+		
+		// set heading ids
+		elem.id = id;
+	};
+
+	console.log(headingData);
+
+	// build table of contents
+	var toc = document.createElement("ol");
+	tocElement.innerHTML = "";
+	tocElement.appendChild(toc);
+
+	// queue of <ol> elements (length represents current depth)
+	var queue = [toc];
+
+	for(var k = 0; k < headingData.length; k++){
+		let heading = headingData[k];
+		
+		// pop the queue as needed
+		while(heading.depth < queue.length){
+			let last = queue.pop();
+			queue[queue.length-1].appendChild(last);
+		}
+
+		// create new <ol> as needed
+		while(heading.depth > queue.length){
+			let nested = document.createElement("ol");
+			queue.push(nested);
+		}
+
+		// add <li> for this heading
+		let listItem = document.createElement("li");
+		let linkElem = document.createElement("a");
+		linkElem.textContent = heading.title;
+		linkElem.setAttribute("href", heading.url);
+		listItem.appendChild(linkElem);
+		queue[queue.length-1].appendChild(listItem);
+	}
+
+	// when finished, should have queue == [tocElement]
+	tocElement.style.opacity = 1;
+	tocElement.style.height = toc.clientHeight + "px";
+}
+
+/* GETELEMENTSBYTAGNAMES
+ * Returns all children of `parentElement` with any of the provided tags, in
+ * document order.
+ */
+function getElementsByTagNames(parentElement, tagNames){
+	// get all tags
+	var elements = [];
+	tagNames.forEach(function(tag){
+		var result = parentElement.getElementsByTagName(tag);
+		elements = elements.concat([].slice.call(result));
+	});
+	
+	// sort elements in document order
+	return elements.sort(documentOrderComparator);
+}
+
+/* DOCUMENTORDERCOMPARATOR
+ * Returns +1 if `a` follows `b`, -1 if `a` precedes `b`, or 0 otherwise.
+ */
+function documentOrderComparator(a, b){
+	// identity check
+	if(a == b) return 0;
+	// compare positions
+	var position = a.compareDocumentPosition(b);
+	if(position & 20) return -1;
+	if(position & 10) return 1;
+	return 0;
+}
+</script>
+</head>
+
+<body>
+
+<!-- CONTENT ------------------------------------------------------------------>
+
+<!-- HEADER -->
+<div id="header-box">
+	<div id="header">
+	<a id="header-name" href="/">
+		Benjamin R. Bray
+	</a><ul id="header-nav">
+		<li><a href="/blog.html">WRITING</a></li>
+		<li><a href="/projects.html">PROJECTS</a></li>
+		<li><a href="/resources.html">RESOURCES</a></li>
+		<li><a href="/resume.pdf">RESUME</a></li>
+	</ul>
+	</div>
+</div>
+
+<div id="page">
+	
+	<!-- CONTENT -->
+	<div id="content">
+<div class="center">
+
+<!-- Post Header -->
+<div class="article-header">
+	<div class="article-title">Gradients are Row Vectors (and you can too!)</div>
+	<div class="article-info">
+		Posted in calculus, linear-algebra on August 20, 2019
+	</div>
+</div>
+
+<!-- Table of Contents (Requires JavaScript) -->
+<div id="toc"></div>
+
+<!-- Post Context -->
+<div class="article-content">
+	<div id="post-body">
+	<div class="math">$$
+\newcommand{\grad}{\nabla}
+$$</div>
+<p>In this post, we will explore the following question:</p>
+<blockquote>
+<p>Should the gradient of a function <span class="math">\(F: \R^n \rightarrow \R\)</span> be a row or column vector?</p>
+</blockquote>
+<p>The answer is quite controversial depending on who you ask!  Mathematicians tend to agree that gradient sshould be row vectors, but for some reason computer scientists can't get on board with the idea.  </p>
+<p>The <a href="https://en.wikipedia.org/wiki/Matrix_calculus">matrix calculus entry</a> on Wikipedia <a href="https://en.wikipedia.org/wiki/Talk:Matrix_calculus">endeavors</a> to remain neutral, suggesting that perhaps the choice is inconsequental and both conventions have their merits.  <strong>Wrong!</strong>  I claim that the gradient-as-column-vector dogma prevalent in computer science is actively holding us back from a deeper understanding of derivatives!</p>
+<h1>Derivatives and Linear Maps</h1>
+<p><strong>Def:</strong> (One dimension) The function <span class="math">\(f : \R \rightarrow \R\)</span> is differentiable at <span class="math">\(x \in \R\)</span> if the following limit exists:
+    </p>
+<div class="math">$$
+    f'(x) \equiv \lim_{h \rightarrow 0} \frac{f(x+h)-f(x)}{h}
+    $$</div>
+<p>Notice that if <span class="math">\(f'(x) = 0\)</span> exists, then it must satisfy</p>
+<div class="highlight"><pre><span></span>$$
+\begin{align}
+f&#39;(x) \equiv \lim_{h \rightarrow 0} \frac{f(x+h)-f(x)}{h}
+&amp;\iff
+\lim_{h \rightarrow 0} {f(x+h) - f(x) - hf&#39;(x)}{h} = 0
+\end{align}
+$$
+</pre></div>
+
+
+<p>An equivalent definition is</p>
+<p><strong>Def:</strong> (One dimension) The function <span class="math">\(f : \R \rightarrow \R\)</span> is differentiable at <span class="math">\(x \in \R\)</span> if there exists a scalar <span class="math">\(a \in \R\)</span></p>
+<p>One can show that if such an <span class="math">\(a \in \R\)</span> exists, it is unique.  So we can unambiguously use the notation <span class="math">\(f'(x)\)</span> to refer to the unique derivative of <span class="math">\(f\)</span> at <span class="math">\(a\)</span>.</p>
+<h1>Bonus:  Differentiation as a Functor</h1>
+<p>Differentiation is a functor!</p>
+	</div>
+</div>
+
+<!-- Disqus ------------------------------------------------------------------->
+
+</div>
+	</div>
+
+	<!-- Page Footer -->
+	<div id="page-footer">
+		<span style="float: left">
+			Powered by <a href="http://blog.getpelican.com/">Pelican</a> and hosted on <a href="https://github.com/benrbray/benrbray.github.io-source">GitHub</a>.
+		</span>
+		<span style="float: right">
+			Last updated on October 16, 2019
+		</span>
+	</div>
+</div>
+
+</body>
+</html>
