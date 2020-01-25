@@ -27,6 +27,7 @@ body {
 	margin: 0;
 	font-family: var(--sans-fonts);
 	font-weight: 300;
+	color: #303030;
 }
 
 /* Basic Styles ------------------------------------------------------------- */
@@ -38,7 +39,9 @@ h1,h2,h3,h4,h5,h6 {
 
 h1 {
 	margin: 40px 0 20px 0;
-	font-size: 24px;
+	font-size: 22px;
+	border-bottom: 1px solid #aaa;
+	color: #aaa;
 }
 
 h2 {
