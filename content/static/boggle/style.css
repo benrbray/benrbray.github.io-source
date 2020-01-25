@@ -1,0 +1,53 @@
+* {
+	font-family: "Segoe UI",Frutiger,"Frutiger Linotype","Dejavu Sans","Helvetica Neue",Arial,sans-serif
+}
+
+body {
+	background-color: #3156AB;
+}
+
+.center {
+	width: 800px;
+	margin: 0 auto;
+}
+
+#board {
+	width: 400px;
+	height: 400px;
+	margin: 0 auto;
+	background-color:  #ABBDE6;
+	
+	border: 5px solid #7D9DE6;
+	border-spacing: 10px;
+}
+
+#board td {
+	text-align: center;
+	font-size: 36px;
+	font-weight: bold;
+	background-color: #FFD935;
+	border: 5px solid #C8A81D;
+}
+
+.panel {
+	margin: 10px 0;
+	padding: 10px;
+	border-radius: 15px;
+	/*background-color:  #ABBDE6;*/
+}
+
+.panel ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.panel li {
+	float: left;
+	width: 22%;
+	margin: 5px;
+	padding: 5px;
+	text-align: center;
+	background-color: #CCDDFF;
+	border-radius: 5px;
+}
