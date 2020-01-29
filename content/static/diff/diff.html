@@ -35,7 +35,7 @@
 			var editClass = (editType==0)?"":(editType>0?"removed":"added");
 			// create element on page for this change
 			var lineElem = document.createElement("div");
-			lineElem.innerHTML = edit[1]; 
+			lineElem.innerText = edit[1]; 
 			lineElem.className = "line " + editClass;
 			diffElem.appendChild(lineElem);
 		});
@@ -71,7 +71,7 @@
 </div>
 
 <!-- result -->
-<div id="diff-result"></div>
+<pre id="diff-result"></pre>
 
 </div>
 

@@ -27,6 +27,7 @@ var image;
 // Images
 var IMAGE_OPTIONS = {
 	"Balloons" : "img/balloons.png",
+	"Mountains" : "img/balloon-mountains.jpeg",
 	"Book" : "img/book.png",
 	"Castle" : "img/castle.jpg",
 	"Cattle" : "img/cattle.jpg",
@@ -35,9 +36,11 @@ var IMAGE_OPTIONS = {
 	"Lena" : "img/lena.png",
 	"Mandril" : "img/mandril.png",
 	"Peppers" : "img/peppers.png",
-	"Waterfall" : "img/waterfall.jpg"
+	"Waterfall" : "img/waterfall.jpg",
+	"Obama" : "img/obama.png",
+	"Seattle" : "img/seattle.png"
 };
-var DEFAULT_IMAGE = "Castle";
+var DEFAULT_IMAGE = "Balloons";
 
 // Worker Status
 var STATUS_PROGRESS = 0;
@@ -136,6 +139,9 @@ function initControls(){
 	carveButton.onclick = function(evt){
 		beginSeamCarve();
 	}
+
+	// hide loadbar
+	loadContainer.style.display = "none";
 }
 
 function initDrawing(){
@@ -190,7 +196,7 @@ function resetInterface(){
 	// set seam slider extrema
 	seamSlider.min = -currentLocalSeams.length;
 	seamSlider.max = 0;
-	seamSlider.value = seamSlider.min;
+	seamSlider.value = seamSlider.max;
 	// show seams
 	updateInterface();
 }
