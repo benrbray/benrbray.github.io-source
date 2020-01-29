@@ -40,8 +40,8 @@ h1,h2,h3,h4,h5,h6 {
 h1 {
 	margin: 40px 0 20px 0;
 	font-size: 22px;
-	border-bottom: 1px solid #aaa;
-	color: #aaa;
+	border-bottom: 1px solid #777;
+	color: #777;
 }
 
 h2 {
@@ -211,40 +211,85 @@ ul ul {
 	margin-bottom: 40px;
 }
 
-.project-box {
-	display: flex;
+.project-container {
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-row-gap: 0.5em;
+	grid-column-gap: 0.5em;
 	margin-top: 10px;
 }
 
-.project-image {
+@media (max-width: 35rem) {
+	.project-container {
+		grid-template-columns: 1fr;
+	}
+}
+
+/*.project-title p {
 	display: block;
-	width: 120px;
-	height: 80px;
-	margin: 0 20px 0 0;
-	border-radius: 4px;
-	overflow: hidden;
+	color: #339;
+	font-family: var(--sans-fonts);
+	font-size: var(--title-size);
+	text-decoration: none;
+	margin: 0.5em 0;
+}*/
+
+.project-box {
+	display: block;
+	position: relative;
 }
 
-.project-image img {
-	width: 100%;
-	height: auto;
-}
-
-.project-info {
-	flex-grow: 1;
-	height: 80px;
-	vertical-align: center;
+.project-box:hover .project-title {
+	text-decoration: underline;
 }
 
 .project-title {
-	margin-bottom: 10px;
-	font-family: var(--sans-fonts);
-	font-size: var(--title-size);
-	color: #339;
+	display: block;
+	position: absolute;
+	bottom: 0.5em;
+	left: 0.5em;
+	color: white;
 }
 
-.project-desc {
-	color: gray;
+.project-title p {
+	display: inline;
+	background-color: rgba(0,0,0,0.7);/* #245994;*/
+    padding: 0.2em 0.2em;
+    box-decoration-break: clone;
+	-webkit-box-decoration-break: clone;
+	font-size: var(--title-size);
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* CSS hack to set height proportionally to dynamic width.
+/*   > padding specified as a percentage is computed wrt
+/*       width of the containing block
+/*   > use a :before element to 
+/* (see also https://stackoverflow.com/a/20117454/1444650)
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.project-thumb:before {
+	content: "";
+	display: block;
+	padding-top: 50%;
+}
+
+.project-thumb {
+	position: relative;
+	margin: 0 auto auto;
+	width: 100%;
+}
+
+.project-thumb img {
+	object-fit: cover;
+	display: block;
+	position: absolute;
+	height: auto;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
 }
 
 /* Posts -------------------------------------------------------------------- */
@@ -317,11 +362,16 @@ a.post-title:hover {
 }
 
 #toc {
-	margin: 20px 0;
+	margin: 1.5em 0;
 	overflow: hidden;
 	height: 0;
 	opacity: 0;
 	transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+#toc > ol {
+	margin-top: 0;
+	margin-bottom: 0;
 }
 
 .article-content {
