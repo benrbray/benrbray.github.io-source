@@ -7,20 +7,20 @@
 <h1 style="margin-bottom:40px;">Projects</h1>
 
 <!-- Article Loop ---------------------------------------------------------- -->
-<div class="post-list">
-{% if articles %}
-    {% for article in articles %}
+<div class="project-container">
+	{% for article in articles %}
 	{% set is_project = (article.category == "projects") %}
 	{% if is_project %}
-    <div class="post-box">
-        <a class="post-title" href="{{article.url}}">{{article.title}}</a>
-        <span class="post-date">{{article.locale_date}}.</span> {{article.summary}}
-	</div>
+	<a class="project-box" href="{{article.url}}">
+		<!-- Thumbnail -->
+		<div class="project-thumb">
+		<img src="{{article.thumb_url}}"></img>
+		</div>
+		<!-- Title -->
+		<div class="project-title"><p>{{article.title}}</p></div>
+	</a>
 	{% endif %}
     {% endfor %}
-{% else %}
-    No posts found here, sorry!
-{% endif %}
 </div>
 
 </div>

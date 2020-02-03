@@ -9,11 +9,17 @@
 
 <!-- ABOUT ME -->
 <div id="about-box">
-	<div id="about-info">
-		<img src="{{SITEURL}}/theme/images/ben-160px.jpg" style="width: 160px; height: 160px; border-radius: 100px; margin: 0 10px;">
-	</div>
+	<ul id="about-info">
+		<li><img id="ben-photo" src="{{SITEURL}}/theme/images/ben-160px.jpg"></img></li>
+		<li class="social">
+			<img src="{{SITEURL}}/theme/icons/github.ico"></img><a href="https://github.com/benrbray">github</a>
+		</li>
+		<li class="social"><img src="{{SITEURL}}/theme/icons/linkedin-14px.png"></img><a href="https://www.linkedin.com/in/benrbray/">linkedin</a></li>
+		<li class="social"><img src="{{SITEURL}}/theme/icons/newgrounds.gif"></img><a href="https://archawn.newgrounds.com/">newgrounds</a></li class="social">
+		<li class="social"><img src="{{SITEURL}}/theme/icons/linkedin-14px.png"></img><a href="mailto:benrbray@gmail.com">gmail</a></li class="social">
+	</ul>
 	<div id="about-text">
-		<p style="margin-top: 5px">I recently obtained a Masters in Computer Science from <b>Georgia Tech</b>.  I'm currently seeking <b>full-time opportunities</b>, so check out my <a href="http://benrbray.com/resume">resume</a>!  My interests include computer graphics, numerical methods, and machine learning.  My research advisor was <a href="https://www.cc.gatech.edu/~jabernethy9/">Jacob Abernethy</a>. 
+		<p>I recently obtained a Masters in Computer Science from <b>Georgia Tech</b>.  I'm currently seeking <b>full-time opportunities</b>, so check out my <a href="http://benrbray.com/resume">resume</a>!  My interests include computer graphics, numerical methods, and machine learning.  My research advisor was <a href="https://www.cc.gatech.edu/~jabernethy9/">Jacob Abernethy</a>. 
 			
 		<p>Previously, I studied math at the University of Michigan, where I also helped with a machine learning <a href="https://eecs445-f16.github.io/">class</a> and <a href="http://msail.github.io/">reading group</a>.  Off-campus I like to bike, cook, and play piano.  Maybe one day I'll make more <a href="http://www.newgrounds.com/portal/view/512482">games</a>.
 		
@@ -26,7 +32,7 @@
 
 <table>
 	<colgroup>
-		<col style="width:120px">
+		<col style="width:8em">
 	</colgroup><tr>
 		<td><b>Spring 2020</b></td>
 		<td>Teaching assistant for ISYE 6740: Computational Data Analysis with Prof. Yao Xie</td>
@@ -82,9 +88,13 @@
 <h1>Selected Writing</h1>
 
 {% for article in articles %}
-<div class="post-box">
-	<a class="post-title" href="{{article.url}}">{{article.title}}</a>
-	<span class="post-date">{{article.locale_date}}.</span> {{article.summary}}
-</div>
+	{% set is_project = (article.category == "projects") %}
+	{% if not is_project %}
+	<div class="post-box">
+		<a class="post-title" href="{{article.url}}">{{article.title}}</a>
+		<span class="post-date">{{article.locale_date}}.</span>
+		{{article.summary}}
+	</div>
+	{% endif %}
 {% endfor %}
 {% endblock %}

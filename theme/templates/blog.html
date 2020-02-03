@@ -10,11 +10,13 @@
 <div class="post-list">
 {% if articles %}
     {% for article in articles %}
-    {% set is_project = (article.category == "projects") %}
-    <div class="post-box">
-        <a class="post-title" href="{{article.url}}">{{article.title}}</a>
-        <span class="post-date">{{article.locale_date}}.</span> {{article.summary}}
-    </div>
+	{% set is_project = (article.category == "projects") %}
+	{% if not is_project %}
+	<div class="post-box">
+		<a class="post-title" href="{{article.url}}">{{article.title}}</a>
+		<span class="post-date">{{article.locale_date}}.</span> {{article.summary}}
+	</div>
+	{% endif %}
     {% endfor %}
 {% else %}
     No posts found here, sorry!

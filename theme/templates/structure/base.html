@@ -15,11 +15,15 @@
 	<!-- Site Styles -->
 	<link rel="stylesheet" href="{{ SITEURL }}/theme/css/style.css" type="text/css">
 	<link rel="stylesheet" href="{{ SITEURL }}/theme/css/pygments.css" type="text/css">
+	<!-- Viewport Meta Tag for Mobile Site -->
+	<!-- https://developer.mozilla.org/en-US/docs/Mozilla/Mobile/Viewport_meta_tag) -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
 	<!-- KaTeX -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
-    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+	<!-- The loading of KaTeX is deferred to speed up page rendering -->
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
-    <!-- To automatically render math in text elements, include the auto-render extension: -->
+	<!-- To automatically render math in text elements, include the auto-render extension: -->
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"
 		onload='renderMathInElement(document.body, {
 			delimiters : [
@@ -45,16 +49,23 @@
 
 <!-- HEADER -->
 <div id="header-box">
-	<div id="header">
-	<a id="header-name" href="{{SITEURL}}/">
-		Benjamin R. Bray
-	</a><ul id="header-nav">
+	<nav id="header">
+	<ul id="header-nav">
+		<li>
+			<a id="header-name" href="{{SITEURL}}/">Benjamin R. Bray</a>
+		</li>
 		<li><a href="/blog{% if DEVELOP_FLAG %}.html{% endif %}">WRITING</a></li>
 		<li><a href="/projects{% if DEVELOP_FLAG %}.html{% endif %}">PROJECTS</a></li>
 		<li><a href="/resources{% if DEVELOP_FLAG %}.html{% endif %}">RESOURCES</a></li>
 		<li><a href="/resume.pdf">RESUME</a></li>
 	</ul>
-	</div>
+	</nav>
+</div>
+
+<!-- PRECONTENT -->
+<div id="pre-content">
+	{% block precontent %}
+	{% endblock %}
 </div>
 
 <div id="page">

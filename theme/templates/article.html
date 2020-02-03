@@ -107,8 +107,19 @@ function documentOrderComparator(a, b){
 </script>
 {% endblock %}
 
+<!-- PRE-CONTENT -------------------------------------------------------------->
+{% block precontent %}
+<!-- Article Banner Image -->
+{% if article.banner_url %}
+<div class="page-banner">
+	<img src="{{SITEURL}}/{{article.banner_url}}"></img>
+</div>
+{% endif %}
+{% endblock %}
+
 <!-- CONTENT ------------------------------------------------------------------>
 {% block content %}
+
 <div class="center">
 
 <!-- Post Header -->
