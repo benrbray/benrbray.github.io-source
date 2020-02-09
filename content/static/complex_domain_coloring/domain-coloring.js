@@ -1,4 +1,4 @@
-"use strict";
+"use strict"
 importScripts("lib/complex.min.js");
 
 var STATUS_PROGRESS = 0;
@@ -10,22 +10,38 @@ self.onmessage = function(evt){
 	var complexFunc = Complex.parseFunction(message.complexFunc,["z"]) || DEFAULT_FUNC;
 	
 	process(complexFunc, evt.data.sourceData, evt.data.targetData,
-			message.repeatTexture, message.fadeTexture);
+			message.repeatTexture, message.fadeTexture, message.blerp);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function Rectangle(x, y, w, h){
-	this.x = x;
-	this.y = y;
-	this.w = w;
-	this.h = h;
-}
-Rectangle.prototype.contains = function(x,y){
-	return (x > this.x && x < this.x+this.w) && (y > this.y && y < this.y+this.h);
+class Rectangle {
+	constructor(x, y, w, h) {
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+	}
+	contains(x, y) {
+		return (x > this.x && x < this.x + this.w) && (y > this.y && y < this.y + this.h);
+	}
 }
 
-function process(complexFunc, sourceData, targetData, repeatTexture, fadeTexture){
+function lerp_rgb(c1, c2, frac){
+	return {
+		r : c1.r * (1-frac) + c2.r * frac,
+		g : c1.g * (1-frac) + c2.g * frac,
+		b : c1.b * (1-frac) + c2.b * frac
+	}
+}
+
+function idx_wrap(x, y, w, h){
+	x = mod(x|0, w);
+	y = mod(y|0, h);
+	return (x + y * w);
+}
+
+function process(complexFunc, sourceData, targetData, repeatTexture, fadeTexture, blerp){
 	// dimensions
 	var sourceWidth = sourceData.width;
 	var sourceHeight = sourceData.height;
@@ -41,25 +57,24 @@ function process(complexFunc, sourceData, targetData, repeatTexture, fadeTexture
 	var r1 = 1;
 	var screenDomain = new Rectangle(-r1, -r1, 2*r1, 2*r1);
 	var r2 = 1;
-	var sourceDomain = new Rectangle(-r2, -r2, 2*r2, 2*r2);
-	
+	var sourceDomain = new Rectangle(-r2/2, -r2/2, r2, r2);
+
 	// iterate screen pixels, map to complex plane, and determine colors
 	for(var x = 0; x < targetWidth; x++){
 		for(var y = 0; y < targetHeight; y++){
 			// map screen coordinates to complex domain
 			var before = mapRect(x, targetHeight-y, screenRect, screenDomain);
-			
 			// apply function
 			var after = complexFunc(before);
-			
 			// map result to source image to get color
 			var sourcePoint = mapRect(after.r, -after.i, sourceDomain, sourceRect);
-			var sourceX = sourcePoint.r | 0;
-			var sourceY = sourcePoint.i | 0;
-			
+
 			// if not tiling, skip drawing if point is outside texture
-			var display = repeatTexture || sourceRect.contains(sourceX, sourceY);
+			var display = repeatTexture || sourceRect.contains(sourcePoint.r, sourcePoint.i);
 			if(!display) continue;
+
+			var sourceX = sourcePoint.r;
+			var sourceY = sourcePoint.i;
 			
 			// tile
 			var reps = 1; // repetitions
@@ -70,28 +85,67 @@ function process(complexFunc, sourceData, targetData, repeatTexture, fadeTexture
 				sourceX = mod(sourceX, sourceWidth);
 				sourceY = mod(sourceY, sourceHeight);
 			}
-			
-			// compute source/target image indices
-			var sourceIdx = (sourceX + sourceY * sourceWidth) * 4;
-			var targetIdx = (x + y * targetWidth) * 4;
-			
-			// copy rgb channels
-			for(var c = 0; c < 3; c++){
-				target[targetIdx + c] = source[sourceIdx + c] / (fadeTexture?reps:1);
+
+			if(blerp){
+				// bilinear interpolation
+				//  (x1,y2)---(x2,y2)
+				//     |         |   
+				//  (x1,y1)---(x2,y1)
+
+				var x1 = Math.floor(sourceX) | 0;
+				var x2 = x1 + 1;
+				var y1 = Math.floor(sourceY) | 0;
+				var y2 = y1 + 1;
+				var xfrac = mod(sourceX, 1);
+				var yfrac = mod(sourceY, 1)
+
+				// get corner indices
+				var tl_idx = idx_wrap(x1, y2, sourceWidth, sourceHeight) * 4;
+				var tr_idx = idx_wrap(x2, y2, sourceWidth, sourceHeight) * 4;
+				var bl_idx = idx_wrap(x1, y1, sourceWidth, sourceHeight) * 4;
+				var br_idx = idx_wrap(x2, y1, sourceWidth, sourceHeight) * 4;
+
+				// get corner colors
+				var tl_color = { r: source[tl_idx], g: source[tl_idx+1], b: source[tl_idx+2] };
+				var tr_color = { r: source[tr_idx], g: source[tr_idx+1], b: source[tr_idx+2] };
+				var bl_color = { r: source[bl_idx], g: source[bl_idx+1], b: source[bl_idx+2] };
+				var br_color = { r: source[br_idx], g: source[br_idx+1], b: source[br_idx+2] };
+
+				// lerp
+				var top_lerp = lerp_rgb(tl_color, tr_color, xfrac);
+				var bot_lerp = lerp_rgb(bl_color, br_color, xfrac);
+				var result   = lerp_rgb(bot_lerp, top_lerp, yfrac);
+				
+				// copy rgb channels
+				var targetIdx = (x + y * targetWidth) * 4;
+				target[targetIdx]   = result.r / (fadeTexture?reps:1);
+				target[targetIdx+1] = result.g / (fadeTexture?reps:1);
+				target[targetIdx+2] = result.b / (fadeTexture?reps:1);
+				target[targetIdx+3] = 255;
+			} else {
+				sourceX = sourceX | 0;
+				sourceY = sourceY | 0;
+				var sourceIdx = (sourceX + sourceY * sourceWidth) * 4;
+				var targetIdx = (x + y * targetWidth) * 4;
+
+				// copy rgb channels
+				for(var c = 0; c < 3; c++){
+					target[targetIdx + c] = source[sourceIdx + c] / (fadeTexture?reps:1);
+				}
+				
+				target[targetIdx+3] = 255;
 			}
-			
-			// full alpha
-			target[targetIdx+3] = 255;// / reps;
 		}
 	}
 	
 	// done; send ImageData back
-	postMessage({
+	var msg = {
 		"status": STATUS_DONE,
 		"message" : {
 			"imgData": targetData
 		}
-	});
+	};
+	postMessage(msg);//[msg.message.imgData.data.buffer]);
 }
 
 // Helpers ---------------------------------------------------------------------

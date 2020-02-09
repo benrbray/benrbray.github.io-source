@@ -21,13 +21,21 @@ function SimpleImageProcessDemo(sourceCanvas, targetCanvas, demoPath){
 	this.targetCanvas = targetCanvas;
 	this.targetContext = targetCanvas.getContext("2d");
 	
-	// dimensions
-	this.width = this.sourceCanvas.width;
-	this.height = this.sourceCanvas.height;
-	
 	// demo
 	this.demoPath = demoPath;
-	this.worker = null;
+
+	// init webworker
+	this.worker = new Worker(this.demoPath);
+	this.worker.onmessage = function(evt){
+		var message = evt.data.message;
+		switch(evt.data.status){
+			case STATUS_PROGRESS:
+				break;
+			case STATUS_DONE:
+				demo.finished(message);
+				break;
+		}
+	}
 	
 	/* PROCESS
 	 * Runs the demo script and waits for completion, optionally updating the
@@ -35,30 +43,15 @@ function SimpleImageProcessDemo(sourceCanvas, targetCanvas, demoPath){
 	 */
 	this.process = function(message){
 		console.log("Demolicious: Processing...");
-		
-		// init webworker
-		this.worker = new Worker(this.demoPath);
-		this.worker.onmessage = function(evt){
-			var message = evt.data.message;
-			switch(evt.data.status){
-				case STATUS_PROGRESS:
-					break;
-				case STATUS_DONE:
-					demo.finished(message);
-					break;
-			}
-		}
-		
-		// start webworker
-		this.worker.postMessage({
-			"sourceData": this.sourceContext.getImageData(0,0,this.width,this.height),
+
+		var msg = {
+			"sourceData": this.sourceContext.getImageData(0,0,this.sourceCanvas.width,this.sourceCanvas.height),
 			"targetData": this.targetContext.createImageData(targetCanvas.width, targetCanvas.height),
 			"message": message
-		});
-	}
-	
-	this.progress = function(message){
-		
+		};
+
+		// start webworker
+		this.worker.postMessage(msg);//, [msg.sourceData.data.buffer, msg.targetData.data.buffer]);
 	}
 	
 	this.finished = function(message){

@@ -1,9 +1,11 @@
 // canvas
 var sourceCanvas, sourceContext;
 var targetCanvas, targetContext;
+var demo = null;
+
 // controls
 var imageSelect;
-var repeatFlag, fadeFlag;
+var repeatFlag, fadeFlag, blerpFlag;
 var recurseButton, computeButton;
 var functionInput;
 // default function
@@ -44,7 +46,8 @@ window.onload = function(){
 	// flags
 	repeatFlag = document.getElementById("repeat-flag");
 	fadeFlag = document.getElementById("fade-flag");
-	repeatFlag.onchange = fadeFlag.onchange = process;
+	blerpFlag = document.getElementById("blerp-flag");
+	repeatFlag.onchange = fadeFlag.onchange = blerpFlag.onchange = process;
 	
 	// compute button
 	computeButton = document.getElementById("compute-button");
@@ -94,10 +97,13 @@ function process(){
 	var message = {
 		"complexFunc" : functionInput.value,
 		"repeatTexture" : repeatFlag.checked,
-		"fadeTexture" : fadeFlag.checked
+		"fadeTexture" : fadeFlag.checked,
+		"blerp" : blerpFlag.checked
 	}
 	
 	// init demo
-	var demo = new SimpleImageProcessDemo(sourceCanvas, targetCanvas,"domain-coloring.js");
+	if(!demo){
+		demo = new SimpleImageProcessDemo(sourceCanvas, targetCanvas,"domain-coloring.js");
+	}
 	demo.process(message);
 }
