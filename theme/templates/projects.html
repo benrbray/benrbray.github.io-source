@@ -10,8 +10,9 @@
 <div class="project-container">
 	{% for article in articles %}
 	{% set is_project = (article.category == "projects") %}
-	{% if is_project %}
-	<a class="project-box" href="{{article.url}}">
+	{% set is_unpublished = (article.unpublished is defined) %}
+	{% if is_project and (DEVELOP_FLAG or not is_unpublished) %}
+	<a class="project-box{% if is_unpublished %} unpublished{% endif %}" href="{{article.url}}">
 		<!-- Thumbnail -->
 		<div class="project-thumb">
 		<img src="{{article.thumb_url}}"></img>

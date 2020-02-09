@@ -43,8 +43,8 @@ TEMPLATE_PAGES = {
 }
 
 # URL Settings (different from publishconf.py)
-ARTICLE_URL = "posts/{date:%Y}/{date:%b}/{date:%d}/{slug}/";
-ARTICLE_SAVE_AS = 'posts/{date:%Y}/{date:%b}/{date:%d}/{slug}.html'
+ARTICLE_URL = "posts/{date:%Y}/{slug}";
+ARTICLE_SAVE_AS = 'posts/{date:%Y}/{slug}.html'
 PAGE_URL = '{slug}/'
 PAGE_SAVE_AS = '{slug}.html'
 

@@ -71,6 +71,11 @@ function buildTableOfContents(tocElement){
 		queue[queue.length-1].appendChild(listItem);
 	}
 
+	while(queue.length > 1){
+		let last = queue.pop();
+		queue[queue.length-1].appendChild(last);
+	}
+
 	// when finished, should have queue == [tocElement]
 	tocElement.style.opacity = 1;
 	tocElement.style.height = toc.offsetHeight + "px";
@@ -113,6 +118,9 @@ function documentOrderComparator(a, b){
 {% if article.banner_url %}
 <div class="page-banner">
 	<img src="{{SITEURL}}/{{article.banner_url}}"></img>
+	{% if article.banner_comment %}
+	<div class="banner-comment">{{article.banner_comment}}</div>
+	{% endif %}
 </div>
 {% endif %}
 {% endblock %}
@@ -128,6 +136,18 @@ function documentOrderComparator(a, b){
 	<div class="article-info">
 		Posted in {{ article.category }} on {{ article.date | strftime("%B %d, %Y")}}
 	</div>
+	{% if article.github_url or article.demo_url %}
+	<div class="article-buttons">
+		{% if article.demo_url %}
+		<!-- Demo URL -->
+		<a class="article-button demo" href={{article.demo_url}}><div>LIVE DEMO</div></a>
+		{% endif %}
+		{% if article.github_url %}
+		<!-- GitHub URL -->
+		<a class="article-button github" href={{article.github_url}}><div>GITHUB</div></a>
+		{% endif %}
+	</div>
+	{% endif %}
 </div>
 
 <!-- Table of Contents (Requires JavaScript) -->

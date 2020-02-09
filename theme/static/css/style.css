@@ -114,27 +114,25 @@ ul ul {
 	overflow: hidden;
 }
 
+.page-banner .banner-comment {
+	position: absolute;
+	bottom: 0.5em;
+	left: 0.5em;
+	background-color: rgba(0,0,0,0.5);
+	color: white;
+	padding: 0.3em;
+	font-size: 0.75em;
+	border-radius: 5px;
+}
+
 .page-banner img {
 	object-fit: cover;
-	object-position: top;
 	display: block;
 	min-height: 16em;
 	max-height: 22em;
 	height: auto;
 	width: 100%;
 }
-
-/*.page-banner img {
-	object-fit: cover;
-	object-position: top;
-	display: block;
-	position: absolute;
-	height: auto;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-}*/
 
 
 /* Page Header -------------------------------------------------------------- */
@@ -313,18 +311,14 @@ ul ul {
 	}
 }
 
-/*.project-title p {
-	display: block;
-	color: #339;
-	font-family: var(--sans-fonts);
-	font-size: var(--title-size);
-	text-decoration: none;
-	margin: 0.5em 0;
-}*/
-
 .project-box {
 	display: block;
 	position: relative;
+}
+
+.project-box.unpublished {
+	opacity: 0.5;
+	border: 2px dashed red;
 }
 
 .project-box:hover .project-title {
@@ -342,7 +336,8 @@ ul ul {
 .project-title p {
 	display: inline;
 	background-color: rgba(0,0,0,0.7);/* #245994;*/
-    padding: 0.2em 0.2em;
+    padding: 0.1em 0.2em;
+	line-height: 1.35em;
     box-decoration-break: clone;
 	-webkit-box-decoration-break: clone;
 	font-size: var(--title-size);
@@ -401,11 +396,23 @@ ul ul {
 	content: counter(section) "." counter(subsec);
 	margin-right: 0.5em;
 }
+
+#post-body img {
+	display: block;
+	margin: 0 auto;
+	max-width: 100%;
+}
+
 /* - - - - - - - - - - - - - - - - - - - - - - */
 
 .post-box {
 	margin: 1.5em 0;
 	text-align: justify;
+}
+
+.post-box.unpublished {
+	opacity: 0.5;
+	border: 2px dashed red;
 }
 
 .post-box p {
@@ -440,13 +447,77 @@ a.post-title:hover {
 }
 
 .article-title {
-	font-size: 1.5em;
+	font-size: 2em;
+	font-weight: bold;
 }
 
 .article-info {
 	font-size: 0.8em;
 	color: #666;
 }
+
+.article-content {
+	margin: 20px 0 0 0;
+}
+
+.article-content h1 {
+	border: none;
+	color: #303030;
+}
+
+/* Article Buttons - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- */
+
+.article-buttons {
+	margin: 1em 0 2em 0;
+}
+
+.article-button {
+	display: inline-block;
+	position: relative;
+	background-color: #3ab53e;
+	width: 12em;
+	color: white;
+	font-weight: bold;
+	padding: 0.5em;
+	vertical-align: middle;
+	margin: 0 0.5em;
+}
+
+.article-button > div {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.article-button:hover {
+	color: brightness(0.6);
+}
+
+.article-button::before {
+	content: "";
+	margin-right: 0.6em;
+	display: inline-block;
+	height: 24px;
+	width: 24px;
+	vertical-align: middle;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+/* GitHub Button */
+.article-button.github       { background-color: #3a88b5; }
+.article-button.github:hover { background-color: #307196; }
+.article-button.github::before {
+	background-image: url("/theme/icons/octocat-28px-white.png");
+}
+
+/* GitHub Button */
+.article-button.demo       { background-color: #52b955;/*#3ab53e*/; }
+.article-button.demo:hover { background-color: #479c4a; }
+.article-button.demo::before {
+	background-image: url("/theme/icons/paper-plane-24px-white.png");
+}
+
+/* Table of Contents ---------------------------------------------------------*/
 
 #toc {
 	margin: 1.5em 0;
@@ -461,8 +532,12 @@ a.post-title:hover {
 	margin-bottom: 0;
 }
 
-.article-content {
-	margin: 20px 0 0 0;
+#toc > ol ol {
+	list-style-type: lower-alpha;
+}
+
+#toc > ol ol ol {
+	list-style-type: lower-roman;
 }
 
 /* Theorem Boxes */
