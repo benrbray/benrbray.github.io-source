@@ -51,7 +51,7 @@ function SimpleImageProcessDemo(sourceCanvas, targetCanvas, demoPath){
 		};
 
 		// start webworker
-		this.worker.postMessage(msg);//, [msg.sourceData.data.buffer, msg.targetData.data.buffer]);
+		this.worker.postMessage(msg);
 	}
 	
 	this.finished = function(message){

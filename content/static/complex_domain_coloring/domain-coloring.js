@@ -145,7 +145,7 @@ function process(complexFunc, sourceData, targetData, repeatTexture, fadeTexture
 			"imgData": targetData
 		}
 	};
-	postMessage(msg);//[msg.message.imgData.data.buffer]);
+	postMessage(msg);
 }
 
 // Helpers ---------------------------------------------------------------------
