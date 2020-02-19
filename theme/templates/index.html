@@ -20,7 +20,7 @@
 	</ul>
 	<div id="about-text">
 		<p>I recently obtained a Masters in Computer Science from <b>Georgia Tech</b>.  I'm currently seeking <b>full-time opportunities</b>, so check out my <a href="http://benrbray.com/resume">resume</a>!  My interests include computer graphics, numerical methods, and machine learning.  My research advisor was <a href="https://www.cc.gatech.edu/~jabernethy9/">Jacob Abernethy</a>. 
-			
+		
 		<p>Previously, I studied math at the University of Michigan, where I also helped with a machine learning <a href="https://eecs445-f16.github.io/">class</a> and <a href="http://msail.github.io/">reading group</a>.  Off-campus I like to bike, cook, and play piano.  Maybe one day I'll make more <a href="http://www.newgrounds.com/portal/view/512482">games</a>.
 		
 		<p>If you'd like to chat, feel free to write me at <a href="mailto:benrbray@gmail.com">benrbray@gmail.com</a>.
@@ -39,7 +39,7 @@
 	</tr>
 	<tr>
 		<td><b>Fall 2019</b></td>
-		<td>Teaching assistant for <a href="https://cs4540-f19.github.io/">CS 4540: Advanced Algorithms</a> with Prof. Jacob</td>
+		<td>Teaching assistant for <a href="https://cs4540-f19.github.io/">CS 4540: Advanced Algorithms</a> with Prof. Jacob Abernethy</td>
 	</tr>
 	<tr>
 		<td><b>July 2019</b></td>
@@ -91,8 +91,7 @@
 {% for article in articles %}
 	{% set is_project = (article.category == "projects") %}
 	{% set is_unpublished = (article.unpublished is defined) %}
-	{% set is_unpublished = (article.unpublished is defined) %}
-	{% if is_project and (DEVELOP_FLAG or not is_unpublished) %}
+	{% if not is_project and (DEVELOP_FLAG or not is_unpublished) %}
 	<div class="post-box{% if is_unpublished %} unpublished{% endif %}">
 		<a class="post-title" href="{{article.url}}">{{article.title}}</a>
 		<span class="post-date">{{article.locale_date}}.</span>
