@@ -4,4 +4,5 @@ tags: algorithms
 thumb_url: images/thumbnails/maze_thumb.png
 demo_url: /static/mazes/maze.html
 unpublished: True
+priority: 1
 Summary: Comparison of maze generation algorithms.
