@@ -7,7 +7,7 @@ Summary: Simulation of two-dimensional incompressible flow with periodic boundar
 
 Simulation of two-dimensional incompressible flow with periodic boundary conditions, achieved by solving the Euler Equations in the frequency domain via the Fast Fourier Transform (FFT).  Written in Java.
 
-![Fluid Simulation]({filename}/images/fluid.png)
+![Fluid Simulation]({static}/images/fluid.png)
 
 Based on the following excellent resources:
 
