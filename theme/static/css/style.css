@@ -85,10 +85,6 @@ a {
 	text-decoration: none;
 }
 
-/*a:visited {
-	color: #1756a9;
-}*/
-
 a:hover {
 	text-decoration: underline;
 }
@@ -412,32 +408,7 @@ ul ul {
 
 /* Posts -------------------------------------------------------------------- */
 
-#post-body {
-	text-align: justify;
-	counter-reset: section subsec subsub;
-}
 
-/* automatic heading numbers with CSS counters */
-#post-body h1 { counter-reset: subsec subsub; }
-#post-body h2 {	counter-reset: subsub;        }
-
-#post-body h1::before {
-	counter-increment: section;
-	content: counter(section);
-	margin-right: 0.5em;
-}
-
-#post-body h2::before {
-	counter-increment: subsec;
-	content: counter(section) "." counter(subsec);
-	margin-right: 0.5em;
-}
-
-#post-body img {
-	display: block;
-	margin: 0 auto;
-	max-width: 100%;
-}
 
 /* - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -473,123 +444,4 @@ a.post-title:hover {
 	margin-right: 0.5em;
 	color: #aaa;
 	font-style: italic;
-}
-
-/* Article Styles ----------------------------------------------------------- */
-
-.article-header {
-	margin: 60px 0 20px 0;
-	text-align: center;
-}
-
-.article-title {
-	font-size: 2em;
-	font-weight: bold;
-}
-
-.article-info {
-	font-size: 0.8em;
-	color: #666;
-}
-
-.article-content {
-	margin: 20px 0 0 0;
-}
-
-.article-content h1 {
-	border: none;
-	color: #303030;
-}
-
-/* Article Buttons - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- */
-
-.article-buttons {
-	margin: 1em 0 2em 0;
-}
-
-.article-button {
-	display: inline-block;
-	position: relative;
-	background-color: #3ab53e;
-	width: 12em;
-	color: white;
-	font-weight: bold;
-	padding: 0.5em;
-	vertical-align: middle;
-	margin: 0 0.5em;
-}
-
-.article-button > div {
-	display: inline-block;
-	vertical-align: middle;
-}
-
-.article-button:hover {
-	color: brightness(0.6);
-}
-
-.article-button::before {
-	content: "";
-	margin-right: 0.6em;
-	display: inline-block;
-	height: 24px;
-	width: 24px;
-	vertical-align: middle;
-	background-repeat: no-repeat;
-	background-size: contain;
-}
-
-/* GitHub Button */
-.article-button.github       { background-color: #3a88b5; }
-.article-button.github:hover { background-color: #307196; }
-.article-button.github::before {
-	background-image: url("/theme/icons/octocat-28px-white.png");
-}
-
-/* GitHub Button */
-.article-button.demo       { background-color: #52b955;/*#3ab53e*/; }
-.article-button.demo:hover { background-color: #479c4a; }
-.article-button.demo::before {
-	background-image: url("/theme/icons/paper-plane-24px-white.png");
-}
-
-/* Table of Contents ---------------------------------------------------------*/
-
-#toc {
-	margin: 1.5em 0;
-	overflow: hidden;
-	height: 0;
-	opacity: 0;
-	transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-}
-
-#toc > ol {
-	margin-top: 0;
-	margin-bottom: 0;
-}
-
-#toc > ol ol {
-	list-style-type: lower-alpha;
-}
-
-#toc > ol ol ol {
-	list-style-type: lower-roman;
-}
-
-/* Theorem Boxes */
-
-.theorem {
-	margin: 10px 40px;
-	padding: 10px;
-	border: 1px solid black;
-}
-
-.theorem .label {
-	font-weight: 500;
-}
-
-.code-listing {
-	margin: 20px 40px;
-	font-size: 0.8em;
-	font-family: monospace;
 }
