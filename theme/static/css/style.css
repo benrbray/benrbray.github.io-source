@@ -20,6 +20,7 @@ Tags: academic
 	/* Fonts */
 	--serif-fonts:  'Droid Serif', serif;
 	--sans-fonts:  'Roboto', 'Segoe UI', 'Ubuntu', sans-serif;
+	--mono-fonts:  'Consolas', monospace;
 	/*--sans-fonts: "Verdana", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
 }
 
@@ -38,10 +39,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 h1 {
-	margin: 40px 0 20px 0;
 	font-size: 1.4em;
-	border-bottom: 1px solid #777;
-	color: #777;
 }
 
 h2 {
@@ -70,11 +68,17 @@ p {
 em {
 	font-weight: 300;
 	font-style: italic;
+	color: black;
 }
 
 b,strong {
 	font-weight: 400;
 	font-style: normal;
+}
+
+tt, code {
+	font-family: var(--mono-fonts);
+	font-size: 0.9em;
 }
 
 /* Links */
@@ -283,7 +287,7 @@ ul ul {
 #about-info li.social a {
 	font-weight: 100;
 	font-family: monospace;
-	color: gray;
+	color: #444;
 }
 
 #about-info li.social img {
@@ -292,6 +296,7 @@ ul ul {
 	max-height: 14px;
 	margin-right: 0.5em;
 	text-align: center;
+	vertical-align: middle;
 }
 
 #ben-photo {
