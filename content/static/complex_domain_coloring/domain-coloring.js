@@ -123,15 +123,36 @@ function process(complexFunc, sourceData, targetData, repeatTexture, fadeTexture
 				target[targetIdx+2] = result.b / (fadeTexture?reps:1);
 				target[targetIdx+3] = 255;
 			} else {
+				
+				////////////
+
+				let dx = sourcePoint.r - sourceWidth / 2;
+				let dy = sourcePoint.i - sourceHeight / 2;
+				let r = Math.sqrt(dx * dx + dy * dy);
+
+				let h = Math.atan2(sourcePoint.i - sourceHeight/2, sourcePoint.r - sourceHeight/2) / (2 * Math.PI);
+				let l = (1 - Math.pow(0.999, r));
+				l = Math.min(Math.max(l, 0.0), 1.0);
+				let s = 1.0;
+
+				////////////
+
+
 				sourceX = sourceX | 0;
 				sourceY = sourceY | 0;
 				var sourceIdx = (sourceX + sourceY * sourceWidth) * 4;
 				var targetIdx = (x + y * targetWidth) * 4;
+				
+				let rgb = hslToRgb(h,s,l);
+				target[targetIdx] = rgb[0] | 0;
+				target[targetIdx+1] = rgb[1] | 0;
+				target[targetIdx+2] = rgb[2] | 0;
 
 				// copy rgb channels
+				/*
 				for(var c = 0; c < 3; c++){
 					target[targetIdx + c] = source[sourceIdx + c] / (fadeTexture?reps:1);
-				}
+				}*/
 				
 				target[targetIdx+3] = 255;
 			}
@@ -149,6 +170,31 @@ function process(complexFunc, sourceData, targetData, repeatTexture, fadeTexture
 }
 
 // Helpers ---------------------------------------------------------------------
+
+function hslToRgb(h, s, l){
+    var r, g, b;
+
+    if(s == 0){
+        r = g = b = l; // achromatic
+    }else{
+        var hue2rgb = function hue2rgb(p, q, t){
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q - p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
 
 // computes a % b that works for negatives
 function mod(a, b){
