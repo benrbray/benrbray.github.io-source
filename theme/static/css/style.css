@@ -104,6 +104,7 @@ ul ul {
 	max-width: var(--max-width);
 	min-width: var(--min-width);
 }
+
 #content {
 	padding: 0 0.5em;
 }
@@ -244,10 +245,18 @@ ul ul {
 	display: grid;
 	grid-row-gap: 0.5rem;
 	grid-column-gap: 1.0rem;
+	align-items: center;
 	
+	max-width: var(--max-width);
+	min-width: var(--min-width);
+
 	margin-bottom: 30px;
+	margin: 0 auto;
 	padding: 1em;
-	background-color: #dedede;
+}
+
+#about-container {
+	background-color: #dfedff;/*#dedede*/;
 }
 
 @media (min-width: 40rem) {
@@ -303,7 +312,8 @@ ul ul {
 	grid-area: img;
 	width: 140px;
 	height: 140px;
-	border-radius: 100px;
+	border: 2px solid #5a97e6;
+	border-radius: 50%;
 }
 
 #about-text {

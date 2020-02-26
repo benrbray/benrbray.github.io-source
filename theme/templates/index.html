@@ -4,11 +4,9 @@
 {% block head %}
 {% endblock %}
 
-<!-- CONTENT ------------------------------------------------------------------>
-{% block content %}
-
+{% block precontent %}
 <!-- ABOUT ME -->
-<div id="about-box">
+<div id="about-container"><div id="about-box">
 	<img id="ben-photo" src="{{SITEURL}}/theme/images/ben-160px.jpg"></img>
 	<ul id="about-info">
 		<li class="social"><img src="{{SITEURL}}/theme/icons/resume-14px-black.png"></img><a href="{{SITEURL}}/resume">resume</a></li class="social">
@@ -26,7 +24,11 @@
 		
 		<p>If you'd like to chat, feel free to write me at <a href="mailto:benrbray@gmail.com">benrbray@gmail.com</a>.
 	</div>
-</div>
+</div></div>
+{% endblock %}
+
+<!-- CONTENT ------------------------------------------------------------------>
+{% block content %}
 
 <!-- Recent Updates -------------------------------------------------------- -->
 <h1>Recent Updates</h1>
