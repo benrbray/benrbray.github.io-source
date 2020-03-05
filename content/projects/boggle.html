@@ -1,0 +1,589 @@
+<html>
+<head>
+<!-- Metadata -->
+<meta name="title" content="Boggle&nbsp;/ Unboggle" />
+<meta name="date" content="March 2, 2020" />
+<meta name="tags" content="algorithms, satisfiability" />
+<meta name="tools" content="javascript, web-components, minisat, emscripten" />
+<meta name="thumb_url" content="images/thumbnails/boggle_thumb.jpg" />
+<meta name="demo_url" content="/static/boggle/boggle.html" />
+<meta name="summary" content="Finds all words in a boggle board using the trie data structure." />
+<meta name="unpublished" content="true" />
+</head>
+<body>
+
+<style>
+grid-game {
+	display: block;
+	margin: 1em auto;
+}
+
+#crossword {
+	font-size: 1rem;
+}
+</style>
+
+<!-- Boggle Template -->
+<template id="grid-game-template">
+	<style>
+	:host {
+		/*all: initial; */
+		display: inline-block;
+		contain: content;
+		margin: 0 auto;
+		font-size: 2rem;
+
+		--cell-size: 2em;
+	}
+	table {
+		margin: 0 auto;
+		border: 2px solid black;
+		user-select: none;
+		border-collapse: collapse;
+	}
+	td {
+		position: relative;
+		box-sizing: border-box;
+		width: var(--cell-size);
+		height: var(--cell-size);
+		text-align: center;
+		vertical-align: middle;
+		border: 1px solid #aaa;
+	}
+	td.void {
+		background-color: black;
+		border: none;
+	}
+	td.disabled {
+		background-color: gray;
+	}
+	td.highlight:not([disabled]) {
+		background-color: lightblue;
+	}
+	td:focus, td.highlight:focus {
+		background-color: #8cbaca;
+	}
+	td.circled::before {
+		content: "";
+		box-sizing: border-box;
+		display: block;
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		width: 100%;
+		height: 100%;
+		border: 1px solid black;
+		border-radius: 50%;
+	}
+	</style>
+	<table id="board" tabindex="0">
+		<tbody id="boardBody">
+		</tbody>
+	</table>
+</template>
+
+<grid-game id="boggle" type="boggle">
+ABCDW
+EFGHX
+IJKLY
+MNOPZ
+</grid-game>
+
+<grid-game id="crossword" type="crossword">
+___@____@____
+___@____@____
+___@_________
+_____@@___@@@
+@@@__@_@_____
+_________@__@
+@@__@@_@@____
+___@_________
+_____@____@@@
+@@@_@_@@_@___
+_________@___
+_@__@____@___
+____@@@__@___
+</grid-game>
+
+<script>
+"use strict"
+
+// get template
+let gridGameTemplate = document.getElementById("grid-game-template");
+
+function mod(a,b) {
+	return ((a%b)+b)%b;
+};
+
+const Highlight = {
+	NONE : null,
+	ROW  : 1,
+	COL  : 2
+}
+
+// define custom element
+class GridGameElement extends HTMLElement {
+	// key constants
+
+	constructor(){
+		console.log("boggle :: constructor");
+		// required call to base constructor
+		super();
+
+		// attach template as shadow dom
+		this.attachShadow({ mode: "open" });
+		this.shadowRoot.appendChild(gridGameTemplate.content.cloneNode(true));
+
+		// get named elements
+		this.boardElement = this.shadowRoot.getElementById("board");
+		this.boardBody = this.shadowRoot.getElementById("boardBody");
+
+		// focus / highlight
+		this.focusedCell = null;
+		this.highlightCells = null;
+		this.highlightFocusIdx = -1;
+		this.highlightMode = null;
+		
+		// game info
+		this.gameType = null;
+
+		// events
+		// TODO: oninput event
+		this.addEventListener("keydown", this.handleKeyDown);
+		this.addEventListener("blur", this.handleBlur);
+	}
+	
+	//// EVENTS //////////////////////////////////////////////////////
+
+	handleClick(row, col){
+		// ignore click when disabled
+		if(this.disabled){ return; }
+		console.log(`boggle :: click (r=${row}, c=${col})`);
+	}
+
+	// when one cell gains focus
+	handleFocus(row, col){
+		console.log(`boggle :: focus (r=${row}, c=${col})`);
+
+		// select row/col in crossword mode
+		if(this.gameType == "crossword"){
+			if(this.highlightMode == Highlight.COL){
+				// change highlight direction if clicking highlighted col
+				if(this.focusedCell && this.focusedCell[1] == col){
+					this.highlightMode = Highlight.ROW;
+					this.highlightRow(row, col);
+				} else {
+					this.highlightCol(col, row);
+				}
+			} else {
+				// change highlight direction if clicking highlighted col
+				if(this.focusedCell && this.focusedCell[0] == row){
+					this.highlightMode = Highlight.COL;
+					this.highlightCol(col, row);
+				} else {
+					this.highlightRow(row, col);
+				}
+			}
+		}
+
+		// set focused cell
+		this.focusedCell = [row, col];
+	}
+
+	// when the entire board loses focus
+	handleBlur(){
+		console.log("boggle :: blur");
+		this.focusedCell = null;
+	}
+
+	handleKeyDown(evt){
+		const Key = {
+			BACKSPACE : 8,
+			TAB : 9,
+			LEFT : 37,
+			RIGHT: 39,
+			UP : 38,
+			DOWN : 40,
+			DELETE : 46
+		}
+
+		const FocusAction = {
+			NONE : 0,
+			NEXT : 1,
+			PREV : 2,
+			UP : 3,
+			DOWN : 4
+		}
+
+		// ignore when inactive or disabled
+		if(this != document.activeElement){ return; }
+		if(this.disabled){ return; }
+		if(this.focusedCell == null){ return; };
+
+		let focusedCell = this.getCell(this.focusedCell[0], this.focusedCell[1]);
+
+		evt.preventDefault();
+		console.log("boggle :: pressed " + evt.keyCode);
+
+		let focusAction = FocusAction.NONE;
+
+		// handle alpha input
+		if(evt.keyCode >= 65 && evt.keyCode <= 90){
+			console.log("boggle :: alpha input");
+			let char = String.fromCharCode(evt.keyCode);
+			focusedCell.textContent = char;
+			focusAction = FocusAction.NEXT;
+		}
+		// handle numeric input
+		if(evt.keyCode >= 48 && evt.keyCode <= 57){
+			console.log("boggle :: numeric input");
+			let char = String.fromCharCode(evt.keyCode);
+			focusedCell.textContent = char;
+			focusAction = FocusAction.NEXT;
+		}
+		// handle deletion
+		if(evt.keyCode == Key.BACKSPACE){
+			focusedCell.textContent = "";
+			focusAction = FocusAction.PREV;
+		}
+		if(evt.keyCode == Key.DELETE){
+			focusedCell.textContent = "";
+			focusAction = FocusAction.NONE;
+		}
+
+		// handle direction keys
+		if(evt.keyCode == Key.LEFT){ focusAction = FocusAction.PREV; }
+		if(evt.keyCode == Key.RIGHT){ focusAction = FocusAction.NEXT; }
+		if(evt.keyCode == Key.UP){ focusAction = FocusAction.UP; }
+		if(evt.keyCode == Key.DOWN){ focusAction = FocusAction.DOWN; }
+
+		if(focusAction == FocusAction.NONE){ return; }
+		
+		if(this.highlightCells == null){
+			let row = this.focusedCell[0];
+			let col = this.focusedCell[1];
+			let disabled = true;
+			let cell = this.getCell(row, col);
+
+			//TODO:  what if entire row/col is disabled?
+			while(disabled && focusAction != FocusAction.NONE){
+
+				if(focusAction == FocusAction.PREV){
+					[row, col] = this.cellPosPrev(row, col);
+				}
+				if(focusAction == FocusAction.NEXT){
+					[row, col] = this.cellPosNext(row, col);
+				}
+				if(focusAction == FocusAction.UP){
+					row = mod( (row - 1), this.numRows);
+				}
+				if(focusAction == FocusAction.DOWN){
+					row = mod( (row + 1), this.numRows);
+				}
+
+				cell = this.getCell(row, col);
+				disabled = cell.hasAttribute("disabled") && cell.getAttribute("disabled") != "false";
+			}
+
+			cell.focus();
+		} else {
+			let disabled = true;
+			let cell = this.highlightCells[this.highlightFocusIdx];
+
+			//TODO:  what if entire row/col is disabled?
+			while(disabled && focusAction != FocusAction.NONE){
+
+				if(focusAction == FocusAction.PREV){
+					this.highlightFocusIdx = mod(this.highlightFocusIdx - 1, this.highlightCells.length);
+				}
+				if(focusAction == FocusAction.NEXT){
+					this.highlightFocusIdx = mod(this.highlightFocusIdx + 1, this.highlightCells.length);
+				}
+				if(focusAction == FocusAction.UP){
+					// TODO (up row/col)
+				}
+				if(focusAction == FocusAction.DOWN){
+					// TODO (down row/col)
+				}
+
+				cell = this.highlightCells[this.highlightFocusIdx];
+				disabled = cell.hasAttribute("disabled") && cell.getAttribute("disabled") != "false";
+			}
+
+			cell.focus();
+		}
+	}
+
+	cellPosNext(row, col){
+		if(col + 1 >= this.numCols){
+			return [ mod(row + 1, this.numRows), 
+			         mod(col + 1, this.numCols) ];
+		} else {
+			return [ row, col + 1];
+		}
+	}
+	
+	cellPosPrev(row, col){
+		if(col - 1 < 0){
+			return [ mod(row - 1, this.numRows), mod(col - 1, this.numCols) ];
+		} else {
+			return [ row, col - 1];
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////
+
+	/* RESETBOARD
+	 * Modifies the board to match the current dimensions (numRows/numCols).
+	 */
+	resetBoard(){
+		console.log("boggle :: resetBoard()");
+
+		// unhighlight
+		this.unhighlight();
+
+		// remove rows as needed
+		while(this.boardBody.children.length > this.numRows){
+			this.boardBody.removeChild(this.boardBody.lastChild);
+		}
+		// create rows as needed
+		while(this.boardBody.children.length < this.numRows){
+			let tr = document.createElement("tr");
+			this.boardBody.appendChild(tr);
+		}
+
+		// modify existing rows add/remove cols as needed
+		for(let rowIdx = 0; rowIdx < this.numRows; rowIdx++){
+			let rowElement = this.boardBody.children[rowIdx];
+			// remove cols as needed
+			while(rowElement.children.length > this.numCols){
+				rowElement.removeChild(rowElement.lastChild);
+			}
+			// create cols as needed
+			while(rowElement.children.length < this.numCols){
+				let td = document.createElement("td");
+				let colIdx = rowElement.children.length;
+				td.setAttribute("tabindex", 0);
+				td.addEventListener("click", 
+					evt => this.handleClick(rowIdx, colIdx)
+				);
+				td.addEventListener("focus", 
+					evt => this.handleFocus(rowIdx, colIdx)
+				);
+				rowElement.appendChild(td);
+			}
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////
+
+	fromString(input){
+		// if input empty, fail gracefully
+		if(!input){ return null; }
+		input = input.trim();
+		if(input.length == 0){ return null; }
+		
+		// parse input and validate dimensions
+		let lines = input.split("\n");
+		let numRows = lines.length;
+		if(numRows < 1){ return null; }
+		
+		let numCols = 0;
+		let data = [];
+
+		for(let r = 0; r < numRows; r++){
+			let line = lines[r].split("");
+
+			// first row determines numCols
+			if(r == 0){ numCols = line.length; }
+			else if(line.length != numCols){ return null; }
+
+			// handle blank / disabled cells
+			for(let c = 0; c < numCols; c++){
+				if(line[c] == "_"){
+					line[c] = "";
+				} else if(line[c] == "@"){
+					line[c] = null;
+				}
+			}
+
+			data.push(line);
+		}
+		
+		return {
+			numRows : numRows,
+			numCols : numCols,
+			data : data
+		};
+	}
+
+	//// CALLBACKS ///////////////////////////////////////////////////
+
+	connectedCallback(){
+		console.log("boggle :: connectedCallback");
+
+		// ISSUE: TextContent may not always exist when `connectedCallback()`
+		// is called.  See for example:
+		//    > https://github.com/WebReflection/html-parsed-element
+		//    > https://stackoverflow.com/questions/48498581/textcontent-empty-in-connectedcallback-of-a-custom-htmlelement
+		if(this.textContent){
+			let boardData = this.fromString(this.textContent);
+
+			if(boardData){
+				this.numRows = boardData.numRows;
+				this.numCols = boardData.numCols;
+
+				for(let r = 0; r < this.numRows; r++){
+					for(let c = 0; c < this.numCols; c++){
+						// TODO: make it easier to iterate over cells without
+						// depending on specific structure as a table
+						let data = boardData.data[r][c];
+						let cell = this.getCell(r,c);
+
+						if(data)          { cell.textContent = data; }
+						if(data === null) {
+							cell.classList.add("void");
+							cell.setAttribute("disabled","");
+							cell.removeAttribute("tabindex","");
+						}
+					}
+				}
+			}
+		}
+
+		this.resetBoard();
+	}
+
+	attributeChangedCallback(name, oldValue, newValue){
+		if(oldValue == newValue) return;
+		console.log(`boggle :: attribute changed (${name}, ${oldValue}, ${newValue})`);
+		
+		switch(name){
+			case "rows": this.numRows = newValue; break;
+			case "cols": this.numCols = newValue; break;
+			case "type":
+				this.gameType = newValue;
+		}
+
+		// when disabled, remove from tab order
+		if (this.disabled) {
+			this.boardElement.setAttribute('tabindex', '-1');
+			this.setAttribute('aria-disabled', 'true');
+		} else {
+			this.boardElement.setAttribute('tabindex', '0');
+			this.setAttribute('aria-disabled', 'false');
+		}
+	}
+
+	//// PROPERTIES //////////////////////////////////////////////////
+
+	// observed attributes
+
+	static get observedAttributes(){
+		return ["disabled", "cols", "rows", "type"];
+	}
+
+	// disabled
+
+	get disabled() {
+		return this.hasAttribute("disabled");
+	}
+
+	set disabled(val) {
+		if(val){ this.setAttribute("disabled", ""); }
+		else   { this.removeAttribute("disabled");  }
+	}
+
+	// dimensions
+
+	get numRows() { return Number(this.getAttribute("rows")) || 4; }
+	get numCols() { return Number(this.getAttribute("cols")) || 4; }
+	set numRows(count) { 
+		this.setAttribute("rows", (count > 0) ? count : 0 );
+		this.resetBoard();
+	}
+	set numCols(count) {
+		this.setAttribute("cols", (count > 0) ? count : 0 );
+		this.resetBoard();
+	}
+
+	getCell(row, col){
+		return this.boardBody.children[row].children[col];
+	}
+	getFocusedCell(row, col){
+		return this.boardBody.children[row].children[col];
+	}
+
+	// Selection -----------------------------------------------------
+
+	unhighlight(){
+		if(!this.highlightCells) { return; }
+
+		for(let k = 0; k < this.highlightCells.length; k++){
+			this.highlightCells[k].classList.remove("highlight");
+		}
+		
+		this.highlightCells = null;
+	}
+
+	// selection
+
+	cellIsDisabled(row, col){
+		let cell = this.getCell(row,col);
+		return (cell.hasAttribute("disabled") && cell.getAttribute("disabled") != "false");
+	}
+
+	highlight(coords, focusIdx=0){
+		if(!coords){ this.unselect(); return; }
+
+		this.unhighlight();
+		this.highlightCells = [];
+		for(let k = 0; k < coords.length; k++){
+			let pos = coords[k];
+			let cell = this.getCell(pos[0], pos[1]);
+			this.highlightCells.push(cell);
+			cell.classList.add("highlight");
+		}
+
+		if(this.highlightCells.length > 0){
+			this.highlightFocusIdx = focusIdx;
+			this.highlightCells[focusIdx].focus();
+		} else {
+			this.highlightCells = null;
+			this.highlightFocusIdx = -1;
+		}
+	}
+
+	highlightRow(row, focusCol=0){
+		console.log(`boggle :: highlightRow (${row}, ${focusCol})`);
+		if(row < 0 || row > this.numRows){ this.unhighlight(); return; }
+
+		let coords = [];
+		for(let c = 0; c < this.numCols; c++){
+			coords.push([row,c]);
+		}
+		
+		if(focusCol < 0) { focusCol = 0; }
+		if(focusCol > coords.length) { focusCol = coords.length; }
+		this.highlight(coords, focusCol);
+	}
+
+	highlightCol(col, focusRow=0){
+		if(col < 0 || col > this.numCols){ this.unhighlight(); return; }
+
+		let coords = [];
+		for(let r = 0; r < this.numRows; r++){
+			coords.push([r,col]);
+		}
+
+		this.highlight(coords, focusRow);
+	}
+}
+
+window.customElements.define("grid-game", GridGameElement);
+</script>
+
+</body>
+</html>
