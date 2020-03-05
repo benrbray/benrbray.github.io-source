@@ -39,12 +39,16 @@ function buildTableOfContents(tocElement){
 		elem.id = id;
 	};
 
-	console.log(headingData);
+	// quit if no headings found
+	if(headingData.length < 1){
+		return;
+	}
 
 	// build table of contents
 	var toc = document.createElement("ol");
 	tocElement.innerHTML = "";
 	tocElement.appendChild(toc);
+	tocElement.className = "";
 
 	// queue of <ol> elements (length represents current depth)
 	var queue = [toc];
@@ -133,27 +137,46 @@ function documentOrderComparator(a, b){
 <div class="center">
 
 <!-- Post Header -->
-<div class="article-header">
+<header class="article-header">
 	<h1 class="article-title">{{ article.title }}</h1>
 	<div class="article-info">
-		Posted in {{ article.category }} on {{ article.date | strftime("%B %d, %Y")}}
+		<!-- Date -->
+		<div class="article-date">
+			Posted in {{ article.category }} on {{ article.date | strftime("%B %d, %Y")}}
+		</div>
+		<!-- Tags / Tools -->
+		{% if article.tags or article.tools %}
+			<nav class="article-tags">
+				{% for tag in article.tags %}<a href="/tag/{{tag}}">{{tag}}</a>{% endfor %}
+				{% if article.tools %}
+					{% set tools = article.tools.split(",") %}
+					{% for tool in tools %}
+					<a class="tool">{{tool}}</a>
+					{% endfor %}
+				{% endif %}
+			</nav>
+		{% endif %}
 	</div>
-	{% if article.github_url or article.demo_url %}
+	{% if article.github_url or article.demo_url or article.pdf_url %}
 	<div class="article-buttons">
-		{% if article.demo_url %}
 		<!-- Demo URL -->
+		{% if article.demo_url %}
 		<a class="article-button demo" href={{article.demo_url}}><div>LIVE DEMO</div></a>
 		{% endif %}
-		{% if article.github_url %}
 		<!-- GitHub URL -->
+		{% if article.github_url %}
 		<a class="article-button github" href={{article.github_url}}><div>GITHUB</div></a>
+		{% endif %}
+		<!-- PDF URL -->
+		{% if article.pdf_url %}
+		<a class="article-button pdf" href={{article.pdf_url}}><div>PDF</div></a>
 		{% endif %}
 	</div>
 	{% endif %}
-</div>
+</header>
 
 <!-- Table of Contents (Requires JavaScript) -->
-<div id="toc"></div>
+<div id="toc" class="displaynone"></div>
 
 <!-- Post Context -->
 <div class="article-content">

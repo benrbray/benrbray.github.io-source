@@ -1,6 +1,7 @@
 title:  AdamBots Automated&nbsp;Scouting&nbsp;Kit
-date: May 1, 2013
+date: June 1, 2014
 tags:  linear-algebra, robotics
+tools:  javascript
 thumb_url: images/thumbnails/aask_thumb.png
 banner_url: images/thumbnails/aask_long.png
 demo_url: /static/aask/aask.html

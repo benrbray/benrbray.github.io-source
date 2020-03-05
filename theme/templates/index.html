@@ -88,6 +88,11 @@
 #about-text p:first-child {
 	margin-top: 0;
 }
+
+h2 {
+	font-size: 1.4em;
+	margin-top: 2em;
+}
 </style>
 {% endblock %}
 
@@ -118,7 +123,7 @@
 {% block content %}
 
 <!-- Recent Updates -------------------------------------------------------- -->
-<h1>Recent Updates</h1>
+<h2>Recent Updates</h2>
 
 <table>
 	<colgroup>
@@ -132,6 +137,10 @@
 		<td>Teaching assistant for <a href="https://cs4540-f19.github.io/">CS 4540: Advanced Algorithms</a> with Prof. Jacob Abernethy</td>
 	</tr>
 	<tr>
+		<td><b>August 2019</b></td>
+		<td>Received <b>MS in Computer Science (High Performance Computing)</b> from Georgia Tech</td>
+	</tr>
+	<tr>
 		<td><b>July 2019</b></td>
 		<td>Attended the <a href="http://www.cas.mcmaster.ca/~deza/tokyo2019progr.html">Discrete Optimization & Machine Learning
 			Workshop</a> at RIKEN AIP</td>
@@ -139,10 +148,6 @@
 	<tr>
 		<td><b>Summer 2019</b></td>
 		<td>Internship at <a href="http://www.riken.jp/en/research/labs/aip/">RIKEN AIP</a> in Tokyo on the <a href="https://emtiyaz.github.io/#research">Approximate Bayesian Inference</a> team</td>
-	</tr>
-	<tr>
-		<td><b>May 2019</b></td>
-		<td>Completed MS in Computer Science (High Performance Computing) at Georgia Tech</td>
 	</tr>
 	<tr>
 		<td><b>Fall 2018</b></td>
@@ -156,7 +161,7 @@
 	</tr>
 </table>
 
-<h1>Projects</h1>
+<h2>Projects</h2>
 
 <div class="project-container">
 	{% for article in articles %}
@@ -176,7 +181,7 @@
 </div>
 
 
-<h1>Selected Writing</h1>
+<h2>Selected Writing</h2>
 
 {% for article in articles %}
 	{% set is_project = (article.category == "projects") %}

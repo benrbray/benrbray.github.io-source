@@ -1,5 +1,6 @@
 Title:  Newton's Method, Optimization, and Root-finding
 Date:  2019-08-21
+unpublished: True
 Category:  calculus, optimization, numerical-methods
 Summary:  There are two versions of Newton's method, one for root-finding, $f(x) = 0$, and one for optimization, $min_{x \in \R^n} f(x)$.  In this post, I show explicitly that Newton's method for optimization is simply Newton's method applied to finding fixed points of the gradient map $x \mapsto \nabla x f$.
 

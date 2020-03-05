@@ -1,5 +1,6 @@
 Title:  Gradients are Row Vectors (and you can too!)
 Date:  2019-08-20
+unpublished: True
 Category:  calculus, linear-algebra
 Summary:  Mathematicians tend to agree that gradients are row vectors, but for some reason computer scientists can't get on borad with the idea.  The goal of this post is to explain why gradients are most naturally expressed as row vectors, and to demonstrate the advantages of this perspective.
 

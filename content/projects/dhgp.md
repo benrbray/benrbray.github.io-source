@@ -1,6 +1,7 @@
 title:  Digital Humanities &amp; German&nbsp;Periodicals
 date: December 1, 2016
-tags:  nlp, topic-models, machine-learning
+tags:  nlp, topic-models, machine-learning, web-dev
+tools: python, flask, gensim
 thumb_url: images/thumbnails/deutsche-rundschau_thumb.png
 banner_url: images/thumbnails/deutsche-rundschau_long.png
 banner_comment: Image: <a href="https://twitter.com/FontaneArchiv/status/999271012591177728">@FontaneArchiv</a>

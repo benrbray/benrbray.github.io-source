@@ -28,7 +28,7 @@ Style declarations for articles, project pages, etc..
 	margin-right: 0.5em;
 }
 
-#post-body img {
+#post-body > img, p > img, p > a img {
 	display: block;
 	margin: 0 auto;
 	max-width: 100%;
@@ -41,18 +41,6 @@ Style declarations for articles, project pages, etc..
 	text-align: center;
 }
 
-.article-title {
-	font-size: 2em;
-	font-weight: bold;
-	font-family: var(--sans-fonts);
-	margin: 0 0 0.5em 0;
-}
-
-.article-info {
-	font-size: 0.8em;
-	color: #666;
-}
-
 .article-content {
 	position: relative;
 	margin: 20px 0 0 0;
@@ -62,6 +50,70 @@ Style declarations for articles, project pages, etc..
 .article-content h1 {
 	border: none;
 	color: #303030;
+}
+.article-content {
+	position: relative;
+	margin: 20px 0 0 0;
+	line-height: 1.4;
+}
+
+.article-content h1 {
+	border: none;
+	color: #303030;
+}
+
+/* Title */
+
+.article-title {
+	font-size: 2em;
+	font-weight: bold;
+	font-family: var(--sans-fonts);
+	margin: 0 0 0.5em 0;
+}
+
+/* Info */
+
+.article-info {
+	font-size: 0.8em;
+	color: #666;
+}
+
+/* Tags */
+
+.article-tags {
+	margin-top: 0.5em;
+}
+
+.article-tags a {
+	display: inline-block;
+	margin: 0 0.2em;
+	padding: 0.4em;
+	background-color: #ffd4d4;
+	color: darkred;
+}
+
+.article-tools {
+	margin-top: 0.5em;
+}
+
+.article-tags a {
+	display: inline-block;
+	margin: 0 0.2em;
+	padding: 0.4em;
+	background-color: lightblue;
+	color: #254298;
+	/*
+	background-color: #ffd4d4;
+	color: darkred;
+	*/
+}
+
+.article-tags .tool {
+	display: inline-block;
+	margin: 0 0.2em;
+	padding: 0.4em;
+	background-color: #b6e2ba;
+	color: darkgreen;
 }
 
 /* Article Buttons ---------------------------------------------------------- */
@@ -115,6 +167,13 @@ Style declarations for articles, project pages, etc..
 .article-button.demo:hover { background-color: #479c4a; }
 .article-button.demo::before {
 	background-image: url("/theme/icons/paper-plane-24px-white.png");
+}
+
+/* PDF Button */
+.article-button.pdf       { background-color: #fb5e5e;/*#3ab53e*/; }
+.article-button.pdf:hover { background-color: #b95252; }
+.article-button.pdf::before {
+	background-image: url("/theme/icons/pdf-24px-white.png");
 }
 
 /* Table of Contents ---------------------------------------------------------*/
@@ -217,6 +276,11 @@ ol ol ol {
 
 figure figure {
 	margin: 0;
+}
+
+figure > img, .img-gallery > img {
+	display: block;
+	max-width: 100%;
 }
 
 .img-col-2 { 

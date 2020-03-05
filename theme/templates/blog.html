@@ -8,16 +8,19 @@
 
 <!-- Article Loop ---------------------------------------------------------- -->
 <div class="post-list">
+
 {% if articles %}
     {% for article in articles %}
 	{% set is_project = (article.category == "projects") %}
-	{% if not is_project %}
-	<div class="post-box">
+	{% set is_unpublished = (article.unpublished is defined) %}
+	{% if not is_project and (DEVELOP_FLAG or not is_unpublished) %}
+	<div class="post-box{% if is_unpublished %} unpublished{% endif %}">
 		<a class="post-title" href="{{article.url}}">{{article.title}}</a>
-		<span class="post-date">{{article.locale_date}}.</span> {{article.summary}}
+		<span class="post-date">{{article.locale_date}}.</span>
+		{{article.summary}}
 	</div>
 	{% endif %}
-    {% endfor %}
+{% endfor %}
 {% else %}
     No posts found here, sorry!
 {% endif %}

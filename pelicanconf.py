@@ -3,14 +3,14 @@
 from __future__ import unicode_literals;
 import datetime;
 
-DEVELOP_FLAG = True;
+DEVELOP_FLAG = False;
 
 # No Cache
 LOAD_CONTENT_CACHE = False;
 
 # Site Information
 SITENAME = 'Benjamin R. Bray';
-SITEURL = '';
+SITEURL = 'http://localhost:8000';
 AUTHOR = 'Benjamin R. Bray';
 TIMEZONE = 'America/Detroit';
 DEFAULT_LANG = 'en';
@@ -80,8 +80,5 @@ SOCIAL = (('You can add links in your config file', '#'),
           ('Another social link', '#'),);
 
 # Feeds (disabled while developing)
-FEED_ALL_ATOM = None;
-CATEGORY_FEED_ATOM = None;
-TRANSLATION_FEED_ATOM = None;
-AUTHOR_FEED_ATOM = None;
-AUTHOR_FEED_RSS = None;
+FEED_DOMAIN = SITEURL;
+FEED_ATOM = "feed.atom";
