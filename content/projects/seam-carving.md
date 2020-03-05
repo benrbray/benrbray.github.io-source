@@ -38,7 +38,7 @@ figure {
 
 [Seam Carving](https://en.wikipedia.org/wiki/Seam_carving) is a classic dynamic programming algorithm for content-aware image resizing.  Rather than scaling or cropping, the seam carving algorithm resizes images by removing (or copying) horizontal and vertical slices of the image.  These slices, called *seams*, must cross the entire image, but are allowed to zig and zag around salient regions in order to avoid too much deformation.  
 
-Below, the image to the left was resized using my [seam carving demo](http://localhost:8000/static/seam-carving/index.html) to produce the image on the right.  Images of hot-air balloons are practically the best-case scenario for seam carving, since the salient objects in the image (balloons!) are mostly surrounded by empty space.  Click the link to try it out for yourself, in real-time, on a variety of test images!
+Below, the image to the left was resized using my [seam carving demo](/static/seam-carving/index.html) to produce the image on the right.  Images of hot-air balloons are practically the best-case scenario for seam carving, since the salient objects in the image (balloons!) are mostly surrounded by empty space.  Click the link to try it out for yourself, in real-time, on a variety of test images!
 
 <figure>
 	<div class="eqheight">

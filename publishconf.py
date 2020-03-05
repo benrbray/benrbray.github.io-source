@@ -12,7 +12,7 @@ import sys;
 sys.path.append(os.curdir);
 from pelicanconf import *;
 
-SITEURL = 'http://benrbray.com';
+SITEURL = 'https://benrbray.com';
 RELATIVE_URLS = False;
 
 
