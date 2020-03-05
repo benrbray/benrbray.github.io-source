@@ -239,8 +239,18 @@ ul ul {
 	font-size: 0.8em;
 }
 
+/* Footer ------------------------------------------------------------------- */
+
 #page-footer a, #page-footer a:visited {
 	color: #aaa;
+}
+
+#visitor-count {
+	display: inline-block;
+	height: 1.2em;
+	margin-right: 1em;
+	vertical-align: middle;
+	filter:grayscale(100%);
 }
 
 /* Projects ----------------------------------------------------------------- */
