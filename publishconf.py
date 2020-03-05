@@ -34,5 +34,5 @@ PAGE_SAVE_AS = '{slug}.html'
 DISQUS_SITENAME = "benrbray";
 
 # Feeds
-FEED_ALL_ATOM = 'feeds/all.atom.xml';
-CATEGORY_FEED_ATOM = 'feeds/%s.atom.xml';
+#FEED_ALL_ATOM = 'feeds/all.atom.xml';
+#CATEGORY_FEED_ATOM = 'feeds/%s.atom.xml';
