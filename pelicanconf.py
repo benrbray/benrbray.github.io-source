@@ -3,7 +3,7 @@
 from __future__ import unicode_literals;
 import datetime;
 
-DEVELOP_FLAG = False;
+DEVELOP_FLAG = True;
 
 # No Cache
 LOAD_CONTENT_CACHE = False;
