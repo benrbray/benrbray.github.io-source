@@ -81,37 +81,21 @@ Style declarations for articles, project pages, etc..
 /* Tags */
 
 .article-tags {
+	display: flex;
 	margin-top: 0.5em;
+	justify-content: center;
+	flex-wrap: wrap;
 }
 
 .article-tags a {
-	display: inline-block;
-	margin: 0 0.2em;
-	padding: 0.4em;
-	background-color: #ffd4d4;
-	color: darkred;
-}
-
-.article-tools {
-	margin-top: 0.5em;
-}
-
-.article-tags a {
-	display: inline-block;
-	margin: 0 0.2em;
+	margin: 0.2em 0.2em;
 	padding: 0.4em;
 	background-color: lightblue;
 	color: #254298;
-	/*
-	background-color: #ffd4d4;
-	color: darkred;
-	*/
+	white-space: nowrap;
 }
 
 .article-tags .tool {
-	display: inline-block;
-	margin: 0 0.2em;
-	padding: 0.4em;
 	background-color: #b6e2ba;
 	color: darkgreen;
 }
