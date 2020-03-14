@@ -2,3 +2,6 @@
 	path = output
 	url = https://github.com/benrbray/benrbray.github.io.git
 	ignore = dirty
+[submodule "content/static/boggle"]
+	path = content/static/boggle
+	url = git@github.com:benrbray/boggle-unboggle.git
