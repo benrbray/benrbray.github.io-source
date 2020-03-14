@@ -5,3 +5,4 @@
 [submodule "content/static/boggle"]
 	path = content/static/boggle
 	url = git@github.com:benrbray/boggle-unboggle.git
+	ignore = dirty
