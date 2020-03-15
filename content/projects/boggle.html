@@ -7,6 +7,7 @@
 <meta name="tools" content="javascript, web-components, minisat, emscripten" />
 <meta name="thumb_url" content="images/thumbnails/boggle_thumb.jpg" />
 <meta name="summary" content="Finds all words in a boggle board using the trie data structure." />
+<meta name="github_url" content="https://github.com/benrbray/boggle-unboggle" />
 <meta name="unpublished" content="true" />
 </head>
 <body>
@@ -57,6 +58,10 @@
 	border-radius: 4px;
 }
 
+.wordList span:hover {
+	background-color: #89bed0;
+}
+
 #boggle-controls {
 	display: grid;
 	grid: auto / 1fr 1fr;
@@ -93,11 +98,12 @@
 		  / auto 1fr;
 }
 
-#unboggle-solve    { grid-area: solve;    }
-#unboggle-board    { grid-area: board;    }
-#unboggle-words     { grid-area: words;    }
+#unboggle-solve { grid-area: solve; }
+#unboggle-board { grid-area: board; }
+#unboggle-words { grid-area: words; }
 
 #unboggle-board {
+	--cell-background-rgb: 0,0,0;
 	background-color: black;
 	color: white;
 }
@@ -119,6 +125,24 @@
 
 #unboggle-solve button:hover {
 	background-color: #eee;
+}
+
+#unboggle-button.stop {
+	border-color: red;
+	color: red;
+	background-color: white;
+}
+
+#unboggle-container {
+	position: relative;
+}
+
+#unboggle-overlay {
+	display: none;
+	position: relative;
+	grid-area: board;
+	background-color: rgba(255,255,255,0.5);
+	z-index: 1;
 }
 
 #crossword {
@@ -152,6 +176,12 @@ window.customElements.define("grid-game", GridGameElement);
 	<input onclick="randomFreq()" type="button" value="Letter Frequency">
 	<input onclick="randomWord()" type="button" value="16-Letter Word">
 	<input onclick="randomDice()" type="button" value="Boggle Dice">
+	<div>
+		<label>Size</label>
+		<input style="max-width: 2em" type="number" step="1" value="4">
+		<label>x</label>
+		<input style="max-width: 2em" type="number" step="1" value="4">
+	</div>
 </div>
 <grid-game id="boggle-board" type="boggle">
 ABCD
@@ -174,17 +204,32 @@ MNOP
 <!-- "this may take a while, why not play some boggle while you wait?" --> 
 
 <div id="unboggle">
+<!-- Board -->
 <grid-game id="unboggle-board" type="boggle">
 THE_
 UN__
 BOGG
 LER_
 </grid-game>
-<div id="unboggle-words">
-	<textarea id="unboggle-input" type="text"></textarea>
+<!-- Spinner -->
+<div id="unboggle-overlay">
+	<div class="spinner"></div>
 </div>
+<!-- Word List -->
+<div id="unboggle-words">
+<textarea id="unboggle-input" type="text">
+ANTIQUE
+EQUITY
+QUALITY
+EQUIVALENT
+ANTIQUITY
+DIVIDE
+QUILT
+</textarea>
+</div>
+<!-- Controls -->
 <div id="unboggle-solve" class="controls">
-	<button onclick="runUnboggler()" type="button">UNSOLVE?</button>
+	<button id="unboggle-button" onclick="runUnboggler()" type="button">UNSOLVE?</button>
 </div>
 </div>
 
@@ -206,6 +251,23 @@ _________@__O
 _@__@____@__O
 ____@@@__@__P
 </grid-game>
+
+<!-- SUDOKU ------------------------------------------------------------------->
+<h1>Sudoku / 数独</h1>
+
+<grid-game id="sudoku" type="sudoku">
+53__7____
+6__195___
+_98____6_
+8___6___3
+4__8_3__1
+7___2___6
+_6____28_
+____8__79
+</grid-game>
+
+<!-- TECHNICAL DETAILS -------------------------------------------------------->
+<h1>Technical Details</h1>
 
 </body>
 </html>
