@@ -99,15 +99,28 @@ h2 {
 {% block precontent %}
 <!-- ABOUT ME -->
 <div id="about-container"><div id="about-box">
-	<img id="ben-photo" src="{{SITEURL}}/theme/images/ben-160px.jpg"></img>
+	<img alt="photo of me, with a blurry space needle in the background!" id="ben-photo" src="{{SITEURL}}/theme/images/ben-160px.jpg"/>
 	<ul id="about-info">
-		<li class="social"><img src="{{SITEURL}}/theme/icons/resume-14px-black.png"></img><a href="{{SITEURL}}/resume">resume</a></li class="social">
 		<li class="social">
-			<img src="{{SITEURL}}/theme/icons/github-14px-black.png"></img><a href="https://github.com/benrbray">github</a>
+			<img alt="resume" src="{{SITEURL}}/theme/icons/resume-14px-black.png"/>
+			<a href="{{SITEURL}}/resume">resume</a>
 		</li>
-		<li class="social"><img src="{{SITEURL}}/theme/icons/linkedin-14px-black.png"></img><a href="https://www.linkedin.com/in/benrbray/">linkedin</a></li>
-		<li class="social"><img src="{{SITEURL}}/theme/icons/ng-bw.ico"></img><a href="https://archawn.newgrounds.com/">newgrounds</a></li class="social">
-		<li class="social"><img src="{{SITEURL}}/theme/icons/mail-14px-black.png"></img><a href="mailto:benrbray@gmail.com">gmail</a></li class="social">
+		<li class="social">
+			<img alt="github" src="{{SITEURL}}/theme/icons/github-14px-black.png"/>
+			<a href="https://github.com/benrbray">github</a>
+		</li>
+		<li class="social">
+			<img alt="linkedin" src="{{SITEURL}}/theme/icons/linkedin-14px-black.png"/>
+			<a href="https://www.linkedin.com/in/benrbray/">linkedin</a>
+		</li>
+		<li class="social">
+			<img alt="newgrounds" src="{{SITEURL}}/theme/icons/ng-bw.ico"/>
+			<a href="https://archawn.newgrounds.com/">newgrounds</a>
+		</li>
+		<li class="social">
+			<img alt="gmail" src="{{SITEURL}}/theme/icons/mail-14px-black.png"/>
+			<a href="mailto:benrbray@gmail.com">gmail</a>
+		</li>
 	</ul>
 	<div id="about-text">
 		<p>I recently obtained a Masters in Computer Science from <b>Georgia Tech</b>.  I'm currently seeking <b>full-time opportunities</b>, so check out my <a href="http://benrbray.com/resume">resume</a>!  My interests include computer graphics, numerical methods, and machine learning.  My research advisor was <a href="https://www.cc.gatech.edu/~jabernethy9/">Jacob Abernethy</a>. 
@@ -128,7 +141,9 @@ h2 {
 <table>
 	<colgroup>
 		<col style="width:8em">
-	</colgroup><tr>
+		<col>
+	</colgroup>
+	<tr>
 		<td><b>Spring 2020</b></td>
 		<td>Teaching assistant for ISYE 6740: Computational Data Analysis with Prof. Yao Xie</td>
 	</tr>
@@ -171,7 +186,7 @@ h2 {
 	<a class="project-box{% if is_unpublished %} unpublished{% endif %}{% if article.priority %} priority-{{article.priority}}{% endif %}" href="{{article.url}}">
 		<!-- Thumbnail -->
 		<div class="project-thumb">
-		<img src="{{article.thumb_url}}"></img>
+		<img alt="" src="{{article.thumb_url}}"/>
 		</div>
 		<!-- Title -->
 		<div class="project-title"><p>{{article.title}}</p></div>
