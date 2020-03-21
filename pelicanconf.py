@@ -58,7 +58,7 @@ OUTPUT_RETENTION = [".git", ".gitignore", ".git/*"]
 
 # Plugins
 PLUGIN_PATHS = ['plugins'];
-PLUGINS = ["render_math"];
+PLUGINS = ["render_math", "wordcount"];
 
 # Plugin:  render_math
 # Even though I use KaTeX for equation rendering, the render_math
