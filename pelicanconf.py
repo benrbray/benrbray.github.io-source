@@ -3,6 +3,7 @@
 from __future__ import unicode_literals;
 import datetime;
 
+# develop mode shows unpublished posts
 DEVELOP_FLAG = True;
 
 # No Cache
