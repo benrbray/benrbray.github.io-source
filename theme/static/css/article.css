@@ -295,7 +295,7 @@ figure > img, .img-gallery > img {
 .img-gallery {
 	display: grid;
 	grid-gap: 1em;
-	place-items: end center;
+	place-items: start center;
 }
 
 .img-gallery.horizontal {

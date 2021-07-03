@@ -7,7 +7,7 @@ import datetime;
 DEVELOP_FLAG = True;
 
 # No Cache
-LOAD_CONTENT_CACHE = False;
+LOAD_CONTENT_CACHE = True;
 
 # Site Information
 SITENAME = 'Benjamin R. Bray';

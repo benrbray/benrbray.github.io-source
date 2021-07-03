@@ -170,9 +170,14 @@
 	padding: 5px;
 	box-shadow: none!important;
 }
+.checkboxes input[type="radio"] + span:hover {
+	background-color: #e0e0e0;
+}
 .checkboxes input[type="radio"]:checked + span {
 	background-color: lightblue;
 	color: darkblue;
+}.checkboxes input[type="radio"]:checked + span:hover {
+	background-color: #89bed0;
 }
 
 .checkboxes label {
@@ -231,23 +236,12 @@ window.customElements.define("grid-game", GridGameElement);
 			<span>Long Word</span>
 		</label>
 	</div>
-	<!--<input onclick="randomUniform()" type="button" value="Uniform">
-	<input onclick="randomFreq()" type="button" value="Letter Frequency">
-	<input onclick="randomWord()" type="button" value="16-Letter Word">
-	<input onclick="randomDice()" type="button" value="Boggle Dice">-->
-	<!--<div>
-		<label>Size</label>
-		<input style="max-width: 2em" type="number" step="1" value="4">
-		<label>x</label>
-		<input style="max-width: 2em" type="number" step="1" value="4">
-	</div>-->
-	<button style="grid-column-end:span 2" onclick="solveBoggle()" type="button">PLAY</button>
 </div>
 <grid-game id="boggle-board" type="boggle">
-ABCD
-EFGH
-IJKL
-MNOP
+PYBO
+ALGG
+MELW
+HTIE
 </grid-game>
 <div id="boggle-list">
 	<div class="wordList"></div>
@@ -350,7 +344,10 @@ Unit Propagation, Clause Learning, DPLL, CDCL
 
 <p>The <em>Long Words</em> randomization option above selects a random word of sixteen letters or more and snakes it through the grid in such a way that the chosen word forms a valid Boggle path.  For sixteen-letter words on a 4x4 grid, it would have been easy enough to sample one of several pre-determined paths through the grid, but I wanted a more general solution for arbitrarily large boggle boards.  
 
-<p>So, given an $M \times N$ grid, how do we randomly sample a valid Boggle path?  Board-exhausting Boggle paths are actually Hamiltonian paths in disguise, and we can use the backbite algorithm to randomly sample them!
+<p>So, given an $M \times N$ grid, how do we randomly sample a valid Boggle path?  Board-exhausting Boggle paths are actually Hamiltonian paths in disguise, and we can use the backbite algorithm to randomly sample them!</p>
+
+<svg id="backbite-demo"></svg>
+<script src="https://d3js.org/d3.v5.min.js"></script>
 
 <p><em>Minor Implementation Detail:</em>  Although I use the backbite algorithm for <em>Long Word</em> randomization, I don't run the algorithm long enough to achieve a uniformly random Hamiltonian path.
 

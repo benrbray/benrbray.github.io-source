@@ -6,3 +6,10 @@
 	path = content/static/boggle
 	url = git@github.com:benrbray/boggle-unboggle.git
 	ignore = dirty
+[submodule "content/static/geom"]
+	path = content/static/geom
+	url = git@github.com:benrbray/geometry-demo.git
+	ignore = dirty
+[submodule "content/static/gridgame-react"]
+	path = content/static/gridgame-react
+	url = git@github.com:benrbray/gridgame-react.git
